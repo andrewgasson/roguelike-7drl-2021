@@ -71,54 +71,70 @@ void ClearTerminal(void)
 	}
 }
 
-int GetTerminalWidth(void)
+inline int GetTerminalXYtoI(int posX, int posY)
+{
+	return (posY * terminalHeight) + posX;
+}
+
+inline int GetTerminalWidth(void)
 {
 	return terminalWidth;
 }
 
-int GetTerminalHeight(void)
+inline int GetTerminalHeight(void)
 {
 	return terminalHeight;
 }
 
-int GetTerminalFontWidth(void)
+inline int GetTerminalFontWidth(void)
 {
 	return terminalFont.width / 16;
 }
 
-int GetTerminalFontHeight(void)
+inline int GetTerminalFontHeight(void)
 {
 	return terminalFont.height / 16;
 }
 
-int GetTerminalScreenWidth(void)
+inline int GetTerminalScreenWidth(void)
 {
 	return GetTerminalFontWidth() * terminalWidth;
 }
 
-int GetTerminalScreenHeight(void)
+inline int GetTerminalScreenHeight(void)
 {
 	return GetTerminalFontHeight() * terminalHeight;
 }
 
-int GetTerminalFontScale(void)
+inline int GetTerminalFontScale(void)
 {
 	return terminalFontScale;
 }
 
-TerminalTile GetTerminalTile(int x, int y)
+inline TerminalTile GetTerminalTile(int posX, int posY)
 {
-	return terminalBuffer[(y * terminalHeight) + x];
+	return terminalBuffer[GetTerminalXYtoI(posX, posY)];
 }
 
-TerminalTile *GetTerminalTileBuffer(void)
+inline TerminalTile *GetTerminalTileBuffer(void)
 {
 	return terminalBuffer;
 }
 
-bool IsWithinTerminal(int x, int y)
+inline bool IsWithinTerminal(int posX, int posY)
 {
-	return x >= 0 && x < terminalWidth && y >= 0 && y < terminalHeight;
+	return posX >= 0
+		&& posX < terminalWidth
+		&& posY >= 0
+		&& posY < terminalHeight;
+}
+
+inline bool IsWithinTerminalV(Vector2 position)
+{
+	return position.x >= 0
+		&& position.x < terminalWidth
+		&& position.y >= 0
+		&& position.y <= terminalHeight;
 }
 
 void SetTerminalFontScale(int scale)
@@ -172,9 +188,9 @@ void SetTerminalSize(int width, int height)
 	ClearTerminal();
 }
 
-void SetTerminalTile(int x, int y, TerminalTile tile)
+inline void SetTerminalTile(int posX, int posY, TerminalTile tile)
 {
-	terminalBuffer[(y * terminalHeight) + x] = tile;
+	terminalBuffer[GetTerminalXYtoI(posX, posY)] = tile;
 }
 
 void DrawTerminal(void)
@@ -221,7 +237,7 @@ void DrawTerminal(void)
 
 			position.x = x * tileWidth;
 			position.y = y * tileHeight;
-			tile = &terminalBuffer[(y * terminalHeight) + x];
+			tile = &terminalBuffer[GetTerminalXYtoI(posX, posY)];
 
 			// Draw background part
 			DrawRectangle(

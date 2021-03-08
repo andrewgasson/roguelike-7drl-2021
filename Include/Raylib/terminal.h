@@ -3,6 +3,8 @@
 
 #include "raylib.h"
 
+#define ALPHA_BLACK CLITERAL(Color){ 0, 0, 0, 0 }
+
 typedef struct TerminalTile {
 	Color background;
 	Color foreground;
@@ -13,6 +15,7 @@ void InitTerminal(int width, int height);
 void CloseTerminal(void);
 void LoadTerminalFont(const char *fileName, int scale);
 void ClearTerminal(void);
+int GetTerminalXYtoI(int posX, int posY);
 int GetTerminalWidth(void);
 int GetTerminalHeight(void);
 int GetTerminalFontWidth(void);
@@ -20,12 +23,13 @@ int GetTerminalFontHeight(void);
 int GetTerminalScreenWidth(void);
 int GetTerminalScreenHeight(void);
 int GetTerminalFontScale(void);
-TerminalTile GetTerminalTile(int x, int y);
+TerminalTile GetTerminalTile(int posX, int posY);
 TerminalTile *GetTerminalTileBuffer(void);
-bool IsWithinTerminal(int x, int y);
+bool IsWithinTerminal(int posX, int posY);
+bool IsWithinTerminalV(Vector2 position);
 void SetTerminalFontScale(int scale);
 void SetTerminalSize(int width, int height);
-void SetTerminalTile(int x, int y, TerminalTile tile);
+void SetTerminalTile(int posX, int posY, TerminalTile tile);
 void DrawTerminal(void);
 
 #endif // TERMINAL_H
