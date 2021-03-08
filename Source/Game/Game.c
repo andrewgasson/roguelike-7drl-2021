@@ -3,6 +3,7 @@
 #include "Game/Compass.h"
 #include "Game/Creature.h"
 #include "Game/Handle.h"
+#include "Game/Sprite.h"
 #include "Raylib/raylib.h"
 #include "Raylib/raymath.h"
 #include "Raylib/terminal.h"
@@ -15,21 +16,37 @@
 void InitGame(void)
 {
 	Handle player;
+	Handle enemy;
 	TerminalTile playerSprite;
+	TerminalTile enemySprite;
 
+	playerSprite.background = ALPHA_BLACK;
+	playerSprite.foreground = WHITE;
+	playerSprite.symbol = '@';
+
+	enemySprite.background = ALPHA_BLACK;
+	enemySprite.foreground = RED;
+	enemySprite.symbol = 'E';
+
+	InitSprites(32);
 	InitCreatures(16);
 
 	player = SpawnCreature();
+	enemy = SpawnCreature();
 
 	if (!IsCreatureValid(player)) {
 		TraceLog(LOG_ERROR, "GAME: Player creature is invalid.");
 		return;
 	}
 
-	playerSprite.background = ALPHA_BLACK;
-	playerSprite.foreground = WHITE;
-	playerSprite.symbol = '@';
-	SetCreatureSprite(player, playerSprite);
+	if (IsSpriteValid(GetCreatureSprite(player)))
+		SetSpriteTile(GetCreatureSprite(player), playerSprite);
+
+	if (IsSpriteValid(GetCreatureSprite(enemy)))
+		SetSpriteTile(GetCreatureSprite(enemy), enemySprite);
+
+	SetCreaturePosition(enemy, (Vector2) { GetTerminalWidth() / 2, GetTerminalHeight() / 2 });
+
 	SetCreatureProtagonist(player);
 }
 
@@ -48,12 +65,6 @@ void UpdateGame(void)
 
 void RenderGame(void)
 {
-	Handle protagonist;
-
 	ClearTerminal();
-
-	protagonist = GetCreatureProtagonist();
-
-	if (IsCreatureValid(protagonist) && IsWithinTerminalV(GetCreaturePosition(protagonist)))
-		SetTerminalTileV(GetCreaturePosition(protagonist), GetCreatureSprite(protagonist));
+	RenderSprites();
 }

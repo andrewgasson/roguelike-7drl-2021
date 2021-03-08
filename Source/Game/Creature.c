@@ -1,5 +1,6 @@
 #include "Game/Creature.h"
 
+#include "Game/Sprite.h"
 #include "Raylib/raymath.h"
 #include <stdlib.h> // for NULL
 
@@ -15,7 +16,7 @@ static struct {
 } *creatureStatus;
 static struct {
 	Vector2 position;
-	TerminalTile sprite;
+	Handle sprite;
 } *creatureData;
 static Handle creatureProtagonist;
 
@@ -68,9 +69,7 @@ Handle SpawnCreature(void)
 			// Prepare instance
 			creatureData[i].position.x = 0;
 			creatureData[i].position.y = 0;
-			creatureData[i].sprite.background = ALPHA_BLACK;
-			creatureData[i].sprite.foreground = GRAY;
-			creatureData[i].sprite.symbol = 'C';
+			creatureData[i].sprite = SpawnSprite();
 
 			return (Handle) {
 				.version = creatureStatus[i].version, 
@@ -82,9 +81,13 @@ Handle SpawnCreature(void)
 	return NULL_CREATURE;
 }
 
-inline void DestroyCreature(Handle creature)
+void DestroyCreature(Handle creature)
 {
 	creatureStatus[creature.index].reserved = false;
+
+	if (IsSpriteValid(creatureData[creature.index].sprite))
+		DestroySprite(creatureData[creature.index].sprite);
+
 	creatureCount--;
 
 	if (creature.index < creatureLowestFree)
@@ -97,6 +100,11 @@ void DestroyAllCreatures(void)
 
 	for (i = 0; i < creatureCapacity; i++)
 		creatureStatus[i].reserved = false;
+
+	for (i = 0; i < creatureCapacity; i++) {
+		if (IsSpriteValid(creatureData[i].sprite))
+			DestroySprite(creatureData[i].sprite);
+	}
 
 	creatureCount = 0;
 	creatureLowestFree = 0;
@@ -128,7 +136,7 @@ inline Vector2 GetCreaturePosition(Handle creature)
 	return creatureData[creature.index].position;
 }
 
-inline TerminalTile GetCreatureSprite(Handle creature)
+inline Handle GetCreatureSprite(Handle creature)
 {
 	return creatureData[creature.index].sprite;
 }
@@ -136,11 +144,9 @@ inline TerminalTile GetCreatureSprite(Handle creature)
 inline void SetCreaturePosition(Handle creature, Vector2 position)
 {
 	creatureData[creature.index].position = position;
-}
-
-inline void SetCreatureSprite(Handle creature, TerminalTile sprite)
-{
-	creatureData[creature.index].sprite = sprite;
+	
+	if (IsSpriteValid(creatureData[creature.index].sprite))
+		SetSpritePosition(creatureData[creature.index].sprite, position);
 }
 
 void CreatureWalk(Handle creature, Compass direction)

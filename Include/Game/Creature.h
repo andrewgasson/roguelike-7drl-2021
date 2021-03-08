@@ -6,6 +6,7 @@
 #include "Raylib/raylib.h"
 #include "Raylib/terminal.h"
 
+// Sprite module must be initialized first.
 void InitCreatures(int capacity);
 int MaxCreatures(void);
 
@@ -20,10 +21,9 @@ bool IsCreatureProtagonist(Handle creature);
 void SetCreatureProtagonist(Handle creature);
 
 Vector2 GetCreaturePosition(Handle creature);
-TerminalTile GetCreatureSprite(Handle creature);
+Handle GetCreatureSprite(Handle creature); // Owned return
 
 void SetCreaturePosition(Handle creature, Vector2 position);
-void SetCreatureSprite(Handle creature, TerminalTile sprite);
 
 void CreatureWalk(Handle creature, Compass direction);
 
