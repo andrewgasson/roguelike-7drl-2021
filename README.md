@@ -1,2 +1,2 @@
-# roguelike-7drl-2021
+# 7DRL 2021
  
