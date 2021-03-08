@@ -17,7 +17,6 @@ int CountSprites(void);
 bool GetSpriteEnabled(Handle sprite);
 Vector2 GetSpritePosition(Handle sprite);
 TerminalTile GetSpriteTile(Handle sprite);
-
 void SetSpriteEnabled(Handle sprite, bool enabled);
 void SetSpritePosition(Handle sprite, Vector2 position);
 void SetSpriteTile(Handle sprite, TerminalTile tile);

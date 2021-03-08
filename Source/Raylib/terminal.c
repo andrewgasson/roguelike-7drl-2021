@@ -10,13 +10,14 @@ static Texture2D terminalFont;
 
 void InitTerminal(int width, int height)
 {
+	// CRASH: Can only initialize once
 	if (terminalWidth != 0 && terminalHeight != 0) {
 		TraceLog(LOG_ERROR, "TERMINAL: Already initialized");
 		return;
 	}
 
-	CloseTerminal();
 	SetTerminalSize(width, height);
+	TraceLog(LOG_INFO, "TERMINAL: Initialized successfully");
 }
 
 void CloseTerminal(void)
@@ -52,7 +53,7 @@ void LoadTerminalFont(const char *fileName, int scale)
 	UnloadTexture(terminalFont);
 	terminalFont = LoadTextureFromImage(image);
 
-	// Cleanup allocations
+	// Allocation clean up
 	UnloadImageColors(colors);
 	UnloadImage(image);
 }
@@ -166,7 +167,7 @@ void SetTerminalSize(int width, int height)
 {
 	// EXIT: Already the same size
 	if (terminalWidth == width && terminalHeight == height) {
-		TraceLog(LOG_WARNING, TextFormat("TERMINAL: Failed to resize terminal to (%dx%d) because terminal is already (%dx%d)", width, height, terminalWidth, terminalHeight));
+		TraceLog(LOG_WARNING, TextFormat("TERMINAL: Failed to resize terminal to %dx%d because terminal is already %dx%d", width, height, terminalWidth, terminalHeight));
 		return;
 	}
 
@@ -175,11 +176,11 @@ void SetTerminalSize(int width, int height)
 
 	terminalBuffer = MemAlloc(width * height * sizeof(*terminalBuffer));
 
-	// EXIT: Allocation failure
+	// CRASH: Allocation failure
 	if (!terminalBuffer) {
 		terminalWidth = 0;
 		terminalHeight = 0;
-		TraceLog(LOG_ERROR, TextFormat("TERMINAL: Allocation failed when setting terminal size to (%dx%d)", width, height));
+		TraceLog(LOG_ERROR, TextFormat("TERMINAL: Allocation failed when setting terminal size to %dx%d", width, height));
 		return;
 	}
 
@@ -206,18 +207,14 @@ void DrawTerminal(void)
 	int yRenderOffset;
 	int tileWidth;
 	int tileHeight;
-	int screenWidth;
-	int screenHeight;
 
 	// Store sizes
 	tileWidth = GetTerminalFontWidth();
 	tileHeight = GetTerminalFontHeight();
-	screenWidth = GetScreenWidth();
-	screenHeight = GetScreenHeight();
 
 	// Store render offsets for screen centering
-	xRenderOffset = screenWidth - GetTerminalScreenWidth();
-	yRenderOffset = screenHeight - GetTerminalScreenHeight();
+	xRenderOffset = GetScreenWidth() - GetTerminalScreenWidth();
+	yRenderOffset = GetScreenHeight() - GetTerminalScreenHeight();
 
 	if (xRenderOffset < 0)
 		xRenderOffset = 0;
@@ -240,12 +237,7 @@ void DrawTerminal(void)
 			tile = &terminalBuffer[GetTerminalXYtoI(x, y)];
 
 			// Draw background part
-			DrawRectangle(
-				position.x,
-				position.y,
-				tileWidth,
-				tileHeight,
-				tile->background);
+			DrawRectangle(position.x, position.y, tileWidth, tileHeight, tile->background);
 
 			// Draw symbol part
 			if (tile->symbol != ' ' && tile->symbol != '\n') {
@@ -255,12 +247,7 @@ void DrawTerminal(void)
 				cutout.y = (tile->symbol / 16) * tileHeight;
 				cutout.width = tileWidth;
 				cutout.height = tileHeight;
-
-				DrawTextureRec(
-					terminalFont,
-					cutout,
-					position,
-					tile->foreground);
+				DrawTextureRec(terminalFont, cutout, position, tile->foreground);
 			}
 		}
 	}

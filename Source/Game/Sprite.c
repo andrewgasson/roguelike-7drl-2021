@@ -28,7 +28,7 @@ void InitSprites(int capacity)
 	spriteData = MemAlloc(capacity * sizeof(*spriteData));
 
 	// CRASH: Allocation failure. Note, if we run out of paging file space 
-	// it will hard crash without any clear errors.
+	// it will hard crash before this, and probably with an ambiguous error
 	if (!spriteStatus || !spriteData) {
 		TraceLog(LOG_ERROR, TextFormat("SPRITE: Failed to allocate module to a capacity of %d", capacity));
 		return;
@@ -57,9 +57,15 @@ Handle SpawnSprite(void)
 
 	for (i = spriteLowestFree; i < spriteCapacity; i++) {
 		if (!spriteStatus[i].reserved) {
+			Handle handle;
+
 			// Update instance status
 			spriteStatus[i].reserved = true;
 			spriteStatus[i].version++;
+
+			// Make handle
+			handle.version = spriteStatus[i].version;
+			handle.index = i;
 
 			// Update module status
 			spriteCount++;
@@ -73,10 +79,7 @@ Handle SpawnSprite(void)
 			spriteData[i].tile.foreground = DARKGRAY;
 			spriteData[i].tile.symbol = '?';
 
-			return (Handle) {
-				.version = spriteStatus[i].version, 
-				.index = i
-			};
+			return handle;
 		}
 	}
 
@@ -148,7 +151,7 @@ void RenderSprites(void)
 	cacheLength = spriteCount;
 	cache = MemAlloc(spriteCount * sizeof(*cache));
 
-	// EXIT: Allocation failed, so skip rendering
+	// CRASH: Allocation failure
 	if (!cache) {
 		TraceLog(LOG_ERROR, TextFormat("SPRITE: Render failed to allocate a handle cache (size: %d)", spriteCount));
 		return;
@@ -161,7 +164,7 @@ void RenderSprites(void)
 			cache[j].version = spriteStatus[i].version;
 			j++;
 
-			// BREAK: Leave early if we've found all the instances.
+			// BREAK: Leave when we have found all active instances
 			if (j == spriteCapacity)
 				break;
 		}

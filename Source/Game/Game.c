@@ -13,7 +13,6 @@
 void InitGame(void)
 {
 	Handle player;
-	Handle enemy;
 	TerminalTile playerTile;
 	TerminalTile enemyTile;
 
@@ -71,8 +70,9 @@ void UpdateGame(void)
 {
 	static int inputTimer = 0;
 
-	// TEMP: Ideally keys happen immediately, or until held down for x, 
-	// then every y. This temporary hack makes it easier to see each step.
+	// TEMP: Ideally keys have a hold-delay-process behaviour. This 
+	// temporary hack makes it easier to see each step without implementing
+	// that just yet
 	if (inputTimer > 0) {
 		inputTimer--;
 		return;

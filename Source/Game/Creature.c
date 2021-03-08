@@ -32,7 +32,7 @@ void InitCreatures(int capacity)
 	creatureData = MemAlloc(capacity * sizeof(*creatureData));
 
 	// CRASH: Allocation failure. Note, if we run out of paging file space 
-	// it will hard crash without any clear errors.
+	// it will hard crash before this, and probably with an ambiguous error
 	if (!creatureStatus || !creatureData) {
 		TraceLog(LOG_ERROR, TextFormat("CREATURE: Failed to allocate module to a capacity of %d", capacity));
 		return;
@@ -62,10 +62,15 @@ Handle SpawnCreature(void)
 	for (i = creatureLowestFree; i < creatureCapacity; i++) {
 		if (!creatureStatus[i].reserved) {
 			int j;
+			Handle handle;
 
 			// Update instance status
 			creatureStatus[i].reserved = true;
 			creatureStatus[i].version++;
+
+			// Make handle
+			handle.version = creatureStatus[i].version;
+			handle.index = i;
 
 			// Update module status
 			creatureCount++;
@@ -79,10 +84,7 @@ Handle SpawnCreature(void)
 			for (j = 0; j < CREATURE_STAT__LENGTH; j++)
 				creatureData[i].stats[j] = 0;
 
-			return (Handle) {
-				.index = i,
-				.version = creatureStatus[i].version
-			};
+			return handle;
 		}
 	}
 
