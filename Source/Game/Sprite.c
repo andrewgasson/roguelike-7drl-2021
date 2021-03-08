@@ -39,7 +39,7 @@ void InitSprites(int capacity)
 	TraceLog(LOG_INFO, TextFormat("SPRITE: Initialized successfully (capacity: %d)", spriteCapacity));
 }
 
-inline int MaxSprite(void)
+inline int MaxSprites(void)
 {
 	return spriteCapacity;
 }

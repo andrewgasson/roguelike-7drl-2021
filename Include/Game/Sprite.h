@@ -6,7 +6,7 @@
 #include "Raylib/terminal.h"
 
 void InitSprites(int capacity);
-int MaxSprite(void);
+int MaxSprites(void);
 
 bool IsSpriteValid(Handle sprite);
 Handle SpawnSprite(void);
