@@ -8,32 +8,7 @@
 #include "Raylib/raymath.h"
 #include "Raylib/terminal.h"
 
-static void ProtagonistWalk(Compass direction)
-{
-	Vector2 destination;
-	Handle protagonist;
-	Handle obstacle;
-
-	protagonist = GetCreatureProtagonist();
-	destination = Vector2Add(GetCreaturePosition(protagonist), CompassToVector2(direction));
-	obstacle = GetCreatureAtPosition(destination);
-
-	if (IsCreatureValid(obstacle)) {
-		int obstacleHealth;
-
-		obstacleHealth = GetCreatureStat(obstacle, CREATURE_STAT_HEALTH);
-		obstacleHealth--;
-		
-		if (obstacleHealth < 0) {
-			TraceLog(LOG_INFO, "GAME: Player demolished creature!");
-			DestroyCreature(obstacle);
-		} else {
-			SetCreatureStat(obstacle, CREATURE_STAT_HEALTH, obstacleHealth);
-		}
-	} else {
-		CreatureWalk(protagonist, direction);
-	}
-}
+#define GAME_INPUT_COOLDOWN 2
 
 void InitGame(void)
 {
@@ -68,20 +43,33 @@ void InitGame(void)
 		SetSpriteTile(GetCreatureSprite(enemy), enemySprite);
 
 	SetCreaturePosition(enemy, (Vector2) { GetTerminalWidth() / 2, GetTerminalHeight() / 2 });
-	SetCreatureStat(enemy, CREATURE_STAT_HEALTH, 1);
+	SetCreatureStat(enemy, CREATURE_STAT_HEALTH, 12 + GetRandomValue(2, 12));
 	SetCreatureProtagonist(player);
 }
 
 void UpdateGame(void)
 {
+	static int inputTimer = 0;
+
+	// TEMP: Ideally keys happen immediately, or until held down for x, 
+	// then every y. This temporary hack makes it easier to see each step.
+	if (inputTimer > 0) {
+		inputTimer--;
+		return;
+	}
+
 	if (IsKeyDown(KEY_UP)) {
-		ProtagonistWalk(COMPASS_NORTH);
+		CreatureWalkOrInteract(GetCreatureProtagonist(), COMPASS_NORTH);
+		inputTimer = GAME_INPUT_COOLDOWN;
 	} else if (IsKeyDown(KEY_RIGHT)) {
-		ProtagonistWalk(COMPASS_EAST);
+		CreatureWalkOrInteract(GetCreatureProtagonist(), COMPASS_EAST);
+		inputTimer = GAME_INPUT_COOLDOWN;
 	} else if (IsKeyDown(KEY_DOWN)) {
-		ProtagonistWalk(COMPASS_SOUTH);
+		CreatureWalkOrInteract(GetCreatureProtagonist(), COMPASS_SOUTH);
+		inputTimer = GAME_INPUT_COOLDOWN;
 	} else if (IsKeyDown(KEY_LEFT)) {
-		ProtagonistWalk(COMPASS_WEST);
+		CreatureWalkOrInteract(GetCreatureProtagonist(), COMPASS_WEST);
+		inputTimer = GAME_INPUT_COOLDOWN;
 	}
 }
 

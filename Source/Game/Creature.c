@@ -123,6 +123,35 @@ inline int CountCreatures(void)
 	return creatureCapacity;
 }
 
+void CreatureAttack(Handle creature, Compass direction)
+{
+	Handle obstacle;
+	Vector2 destination;
+
+	destination = Vector2Add(GetCreaturePosition(creature), CompassToVector2(direction));
+	obstacle = GetCreatureAtPosition(destination);
+
+	if (IsCreatureValid(obstacle)) {
+		int damage;
+		int health;
+
+		damage = GetRandomValue(1, 6);
+		health = GetCreatureStat(obstacle, CREATURE_STAT_HEALTH);
+		health -= damage;
+		SetCreatureStat(obstacle, CREATURE_STAT_HEALTH, health);
+
+		if (IsCreatureProtagonist(creature))
+			TraceLog(LOG_INFO, TextFormat("CREATURE: Protagonist dealt %d damage to creature", damage));
+
+		if (health < 0) {
+			if (IsCreatureProtagonist(creature))
+				TraceLog(LOG_INFO, "CREATURE: Protagonist killed a creature!");
+
+			DestroyCreature(obstacle);
+		}
+	}
+}
+
 void CreatureWalk(Handle creature, Compass direction)
 {
 	Handle obstacle;
@@ -137,6 +166,22 @@ void CreatureWalk(Handle creature, Compass direction)
 	}
 
 	SetCreaturePosition(creature, destination);
+}
+
+// This is not an effecient function. However, it should really only be called 
+// for the protagonist.
+void CreatureWalkOrInteract(Handle creature, Compass direction)
+{
+	Vector2 destination;
+	Handle obstacle;
+
+	destination = Vector2Add(GetCreaturePosition(creature), CompassToVector2(direction));
+	obstacle = GetCreatureAtPosition(destination);
+
+	if (IsCreatureValid(obstacle))
+		CreatureAttack(creature, direction);
+	else
+		CreatureWalk(creature, direction);
 }
 
 Handle GetCreatureAtPosition(Vector2 position)
