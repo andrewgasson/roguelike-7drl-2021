@@ -19,6 +19,7 @@ static struct {
 static struct {
 	Vector2 position;
 	Handle sprite;
+	int stats[CREATURE_STAT__LENGTH];
 } *creatureData;
 static Handle creatureProtagonist;
 
@@ -60,6 +61,8 @@ Handle SpawnCreature(void)
 
 	for (i = creatureLowestFree; i < creatureCapacity; i++) {
 		if (!creatureStatus[i].reserved) {
+			int j;
+
 			// Update instance status
 			creatureStatus[i].reserved = true;
 			creatureStatus[i].version++;
@@ -73,9 +76,12 @@ Handle SpawnCreature(void)
 			creatureData[i].position.y = 0;
 			creatureData[i].sprite = SpawnSprite();
 
+			for (j = 0; j < CREATURE_STAT__LENGTH; j++)
+				creatureData[i].stats[j] = 0;
+
 			return (Handle) {
-				.version = creatureStatus[i].version, 
-				.index = i
+				.index = i,
+				.version = creatureStatus[i].version
 			};
 		}
 	}
@@ -174,6 +180,11 @@ inline Handle GetCreatureSprite(Handle creature)
 	return creatureData[creature.index].sprite;
 }
 
+inline int GetCreatureStat(Handle creature, CreatureStat stat)
+{
+	return creatureData[creature.index].stats[stat];
+}
+
 inline bool IsCreatureProtagonist(Handle creature)
 {
 	return IsCreatureValid(creatureProtagonist)
@@ -191,6 +202,11 @@ inline void SetCreaturePosition(Handle creature, Vector2 position)
 inline void SetCreatureProtagonist(Handle creature)
 {
 	creatureProtagonist = creature;
+}
+
+inline void SetCreatureStat(Handle creature, CreatureStat stat, int value)
+{
+	creatureData[creature.index].stats[stat] = value;
 }
 
 static void CacheActiveCreatures(int *outLength, Handle *outHandles[])

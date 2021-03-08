@@ -8,10 +8,32 @@
 #include "Raylib/raymath.h"
 #include "Raylib/terminal.h"
 
-#define VECTOR2_NORTH CLITERAL(Vector2){  0, -1 }
-#define VECTOR2_EAST  CLITERAL(Vector2){  1,  0 }
-#define VECTOR2_SOUTH CLITERAL(Vector2){  0,  1 }
-#define VECTOR2_WEST  CLITERAL(Vector2){ -1,  0 }
+static void ProtagonistWalk(Compass direction)
+{
+	Vector2 destination;
+	Handle protagonist;
+	Handle obstacle;
+
+	protagonist = GetCreatureProtagonist();
+	destination = Vector2Add(GetCreaturePosition(protagonist), CompassToVector2(direction));
+	obstacle = GetCreatureAtPosition(destination);
+
+	if (IsCreatureValid(obstacle)) {
+		int obstacleHealth;
+
+		obstacleHealth = GetCreatureStat(obstacle, CREATURE_STAT_HEALTH);
+		obstacleHealth--;
+		
+		if (obstacleHealth < 0) {
+			TraceLog(LOG_INFO, "GAME: Player demolished creature!");
+			DestroyCreature(obstacle);
+		} else {
+			SetCreatureStat(obstacle, CREATURE_STAT_HEALTH, obstacleHealth);
+		}
+	} else {
+		CreatureWalk(protagonist, direction);
+	}
+}
 
 void InitGame(void)
 {
@@ -46,19 +68,20 @@ void InitGame(void)
 		SetSpriteTile(GetCreatureSprite(enemy), enemySprite);
 
 	SetCreaturePosition(enemy, (Vector2) { GetTerminalWidth() / 2, GetTerminalHeight() / 2 });
+	SetCreatureStat(enemy, CREATURE_STAT_HEALTH, 1);
 	SetCreatureProtagonist(player);
 }
 
 void UpdateGame(void)
 {
 	if (IsKeyDown(KEY_UP)) {
-		CreatureWalk(GetCreatureProtagonist(), COMPASS_NORTH);
+		ProtagonistWalk(COMPASS_NORTH);
 	} else if (IsKeyDown(KEY_RIGHT)) {
-		CreatureWalk(GetCreatureProtagonist(), COMPASS_EAST);
+		ProtagonistWalk(COMPASS_EAST);
 	} else if (IsKeyDown(KEY_DOWN)) {
-		CreatureWalk(GetCreatureProtagonist(), COMPASS_SOUTH);
+		ProtagonistWalk(COMPASS_SOUTH);
 	} else if (IsKeyDown(KEY_LEFT)) {
-		CreatureWalk(GetCreatureProtagonist(), COMPASS_WEST);
+		ProtagonistWalk(COMPASS_WEST);
 	}
 }
 
