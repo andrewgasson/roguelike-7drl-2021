@@ -73,7 +73,7 @@ void ClearTerminal(void)
 
 inline int GetTerminalXYtoI(int posX, int posY)
 {
-	return (posY * terminalHeight) + posX;
+	return (posY * terminalWidth) + posX;
 }
 
 inline int GetTerminalWidth(void)
@@ -131,10 +131,10 @@ inline bool IsWithinTerminal(int posX, int posY)
 
 inline bool IsWithinTerminalV(Vector2 position)
 {
-	return position.x >= 0
-		&& position.x < terminalWidth
-		&& position.y >= 0
-		&& position.y <= terminalHeight;
+	return (int)position.x >= 0
+		&& (int)position.x < terminalWidth
+		&& (int)position.y >= 0
+		&& (int)position.y <= terminalHeight;
 }
 
 void SetTerminalFontScale(int scale)
@@ -193,22 +193,23 @@ inline void SetTerminalTile(int posX, int posY, TerminalTile tile)
 	terminalBuffer[GetTerminalXYtoI(posX, posY)] = tile;
 }
 
+inline void SetTerminalTileV(Vector2 position, TerminalTile tile)
+{
+	terminalBuffer[GetTerminalXYtoI((int)position.x, (int)position.y)] = tile;
+}
+
 void DrawTerminal(void)
 {
 	int x;
 	int y;
 	int xRenderOffset;
 	int yRenderOffset;
-	int width;
-	int height;
 	int tileWidth;
 	int tileHeight;
 	int screenWidth;
 	int screenHeight;
 
 	// Store sizes
-	width = terminalWidth;
-	height = terminalHeight;
 	tileWidth = GetTerminalFontWidth();
 	tileHeight = GetTerminalFontHeight();
 	screenWidth = GetScreenWidth();
@@ -221,44 +222,43 @@ void DrawTerminal(void)
 	if (xRenderOffset < 0)
 		xRenderOffset = 0;
 	else if (xRenderOffset > 1)
-		xRenderOffset /= 2;
+		xRenderOffset = xRenderOffset / 2;
 
 	if (yRenderOffset < 0)
 		yRenderOffset = 0;
 	else if (yRenderOffset > 1)
-		yRenderOffset /= 2;
+		yRenderOffset = yRenderOffset / 2;
 
 	// Render tiles
-	for (y = 0; y < height; y++) {
-		for (x = 0; x < width; x++) {
+	for (y = 0; y < terminalHeight; y++) {
+		for (x = 0; x < terminalWidth; x++) {
 			Vector2 position;
-			
 			TerminalTile *tile;
 
-			position.x = x * tileWidth;
-			position.y = y * tileHeight;
-			tile = &terminalBuffer[GetTerminalXYtoI(posX, posY)];
+			position.x = (tileWidth * x) + xRenderOffset;
+			position.y = (tileHeight * y) + yRenderOffset;
+			tile = &terminalBuffer[GetTerminalXYtoI(x, y)];
 
 			// Draw background part
 			DrawRectangle(
 				position.x,
 				position.y,
-				position.x + tileWidth,
-				position.y + tileHeight,
+				tileWidth,
+				tileHeight,
 				tile->background);
 
 			// Draw symbol part
 			if (tile->symbol != ' ' && tile->symbol != '\n') {
-				Rectangle fontCutout;
+				Rectangle cutout;
 
-				fontCutout.x = (tile->symbol / 16) * tileWidth;
-				fontCutout.y = (tile->symbol / 16) * tileHeight;
-				fontCutout.width = fontCutout.x + tileWidth;
-				fontCutout.height = fontCutout.y + tileHeight;
+				cutout.x = (tile->symbol % 16) * tileWidth;
+				cutout.y = (tile->symbol / 16) * tileHeight;
+				cutout.width = tileWidth;
+				cutout.height = tileHeight;
 
 				DrawTextureRec(
 					terminalFont,
-					fontCutout,
+					cutout,
 					position,
 					tile->foreground);
 			}

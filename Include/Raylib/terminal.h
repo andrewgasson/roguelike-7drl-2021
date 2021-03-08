@@ -30,6 +30,7 @@ bool IsWithinTerminalV(Vector2 position);
 void SetTerminalFontScale(int scale);
 void SetTerminalSize(int width, int height);
 void SetTerminalTile(int posX, int posY, TerminalTile tile);
+void SetTerminalTileV(Vector2 position, TerminalTile tile);
 void DrawTerminal(void);
 
 #endif // TERMINAL_H
