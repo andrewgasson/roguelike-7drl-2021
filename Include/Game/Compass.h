@@ -1,5 +1,5 @@
-#ifndef COMPASS_H
-#define COMPASS_H
+#ifndef GAME_COMPASS_H
+#define GAME_COMPASS_H
 
 typedef enum Compass {
 	COMPASS_NORTH,
@@ -12,4 +12,4 @@ typedef enum Compass {
 
 Vector2 CompassToVector2(Compass compass);
 
-#endif // COMPASS_H
+#endif // GAME_COMPASS_H

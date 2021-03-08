@@ -1,5 +1,5 @@
-#ifndef CREATURE_H
-#define CREATURE_H
+#ifndef GAME_CREATURE_H
+#define GAME_CREATURE_H
 
 #include "Game/Compass.h"
 #include "Game/Handle.h"
@@ -27,4 +27,4 @@ void SetCreatureSprite(Handle creature, TerminalTile sprite);
 
 void CreatureWalk(Handle creature, Compass direction);
 
-#endif // CREATURE_H
+#endif // GAME_CREATURE_H
