@@ -46,7 +46,6 @@ void InitGame(void)
 		SetSpriteTile(GetCreatureSprite(enemy), enemySprite);
 
 	SetCreaturePosition(enemy, (Vector2) { GetTerminalWidth() / 2, GetTerminalHeight() / 2 });
-
 	SetCreatureProtagonist(player);
 }
 

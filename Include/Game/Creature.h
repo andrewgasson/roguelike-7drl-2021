@@ -16,15 +16,13 @@ void DestroyCreature(Handle creature);
 void DestroyAllCreatures(void);
 int CountCreatures(void);
 
-Handle GetCreatureProtagonist(void);
-bool IsCreatureProtagonist(Handle creature);
-void SetCreatureProtagonist(Handle creature);
-
-Vector2 GetCreaturePosition(Handle creature);
-Handle GetCreatureSprite(Handle creature); // Owned return
-
-void SetCreaturePosition(Handle creature, Vector2 position);
-
 void CreatureWalk(Handle creature, Compass direction);
+Handle GetCreatureAtPosition(Vector2 position);
+Vector2 GetCreaturePosition(Handle creature);
+Handle GetCreatureProtagonist(void);
+Handle GetCreatureSprite(Handle creature); // Owned return
+bool IsCreatureProtagonist(Handle creature);
+void SetCreaturePosition(Handle creature, Vector2 position);
+void SetCreatureProtagonist(Handle creature);
 
 #endif // GAME_CREATURE_H

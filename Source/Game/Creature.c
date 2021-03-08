@@ -7,6 +7,8 @@
 // Spawned creatures have a minimum version of 1, so a version of 0 is NULL.
 #define NULL_CREATURE (Handle) { 0 }
 
+static void CacheActiveCreatures(int *outLength, Handle *outHandles[]);
+
 static int creatureCapacity;
 static int creatureCount;
 static int creatureLowestFree;
@@ -115,20 +117,46 @@ inline int CountCreatures(void)
 	return creatureCapacity;
 }
 
-inline Handle GetCreatureProtagonist(void)
+void CreatureWalk(Handle creature, Compass direction)
 {
-	return creatureProtagonist;
+	Handle obstacle;
+	Vector2 destination;
+
+	destination = Vector2Add(GetCreaturePosition(creature), CompassToVector2(direction));
+	obstacle = GetCreatureAtPosition(destination);
+
+	if (IsCreatureValid(obstacle)) {
+		TraceLog(LOG_INFO, "CREATURE: Colliding with obstacle!");
+		return;
+	}
+
+	SetCreaturePosition(creature, destination);
 }
 
-inline bool IsCreatureProtagonist(Handle creature)
+Handle GetCreatureAtPosition(Vector2 position)
 {
-	return IsCreatureValid(creatureProtagonist)
-		&& AreHandlesEqual(creature, creatureProtagonist);
-}
+	int i;
+	int length;
+	Handle found;
+	Handle *cache;
 
-inline void SetCreatureProtagonist(Handle creature)
-{
-	creatureProtagonist = creature;
+	CacheActiveCreatures(&length, &cache);
+
+	if (!cache)
+		return NULL_CREATURE;
+
+	found = NULL_CREATURE;
+
+	for (i = 0; i < length; i++) {
+		if (creatureData[cache[i].index].position.x == position.x
+		&&  creatureData[cache[i].index].position.y == position.y) {
+			found = cache[i];
+			break;
+		}
+	}
+
+	MemFree(cache);
+	return found;
 }
 
 inline Vector2 GetCreaturePosition(Handle creature)
@@ -136,9 +164,20 @@ inline Vector2 GetCreaturePosition(Handle creature)
 	return creatureData[creature.index].position;
 }
 
+inline Handle GetCreatureProtagonist(void)
+{
+	return creatureProtagonist;
+}
+
 inline Handle GetCreatureSprite(Handle creature)
 {
 	return creatureData[creature.index].sprite;
+}
+
+inline bool IsCreatureProtagonist(Handle creature)
+{
+	return IsCreatureValid(creatureProtagonist)
+		&& AreHandlesEqual(creature, creatureProtagonist);
 }
 
 inline void SetCreaturePosition(Handle creature, Vector2 position)
@@ -149,11 +188,42 @@ inline void SetCreaturePosition(Handle creature, Vector2 position)
 		SetSpritePosition(creatureData[creature.index].sprite, position);
 }
 
-void CreatureWalk(Handle creature, Compass direction)
+inline void SetCreatureProtagonist(Handle creature)
 {
-	Vector2 destination;
+	creatureProtagonist = creature;
+}
 
-	destination = Vector2Add(GetCreaturePosition(creature), CompassToVector2(direction));
+static void CacheActiveCreatures(int *outLength, Handle *outHandles[])
+{
+	int i;
+	int j;
 
-	SetCreaturePosition(creature, destination);
+	// EXIT: There are no creatures
+	if (creatureCount == 0) {
+		*outLength = 0;
+		*outHandles = NULL;
+		return;
+	}
+
+	*outLength = 0;
+	*outHandles = MemAlloc(creatureCount * sizeof(**outHandles));
+
+	if (!*outHandles) {
+		TraceLog(LOG_ERROR, TextFormat("CREATURE: Failed to allocate cache (size: %d)", creatureCount));
+		return;
+	}
+
+	for (j = 0, i = 0; i < creatureCapacity; i++) {
+		if (creatureStatus[i].reserved) {
+			(*outHandles)[j].index = i;
+			(*outHandles)[j].version = creatureStatus[i].version;
+			j++;
+
+			// BREAK: Leave early if we've found all the instances.
+			if (j == creatureCount)
+				break;
+		}
+	}
+
+	*outLength = j;
 }
