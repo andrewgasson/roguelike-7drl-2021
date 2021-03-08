@@ -36,7 +36,7 @@ void InitCreatures(int capacity)
 
 	creatureCapacity = capacity;
 	DestroyAllCreatures();
-	TraceLog(LOG_INFO, TextFormat("CREATURE: Initialized creatures successfully (capacity: %d)", creatureCapacity));
+	TraceLog(LOG_INFO, TextFormat("CREATURE: Initialized successfully (capacity: %d)", creatureCapacity));
 }
 
 inline int MaxCreatures(void)
