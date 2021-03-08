@@ -1,6 +1,8 @@
+#include "Game/Game.h"
 #include "Raylib/raylib.h"
 #include "Raylib/terminal.h"
 
+/*
 static void RainbowTerminal(void)
 {
 	int i;
@@ -32,6 +34,7 @@ static void RainbowTerminal(void)
 		tiles[i].symbol = symbol;
 	}
 }
+*/
 
 int main(int argc, char *argv[])
 {
@@ -59,15 +62,11 @@ int main(int argc, char *argv[])
 	EndDrawing();
 
 	// Start game loop
-	RainbowTerminal();
+	InitGame();
 
 	while (!WindowShouldClose()) {
-		frame++;
-
-		// Purely to stop seizures, runs perfect otherwise
-		if (frame % 15 == 0)
-			RainbowTerminal();
-
+		UpdateGame();
+		RenderGame();
 		BeginDrawing();
 			ClearBackground(BLACK);
 			DrawTerminal();
