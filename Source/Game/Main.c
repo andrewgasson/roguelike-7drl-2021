@@ -38,8 +38,6 @@ static void RainbowTerminal(void)
 
 int main(int argc, char *argv[])
 {
-	unsigned int frame;
-
 	(void) argc; // Unused
 	(void) argv; // Unused
 
