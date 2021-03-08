@@ -187,5 +187,5 @@ void RenderSprites(void)
 
 	// Render to terminal
 	for (i = 0; i < cacheLength; i++)
-		SetTerminalTileV(spriteData[i].position, spriteData[i].tile);
+		SetTerminalTileV(spriteData[cache[i].index].position, spriteData[cache[i].index].tile);
 }
