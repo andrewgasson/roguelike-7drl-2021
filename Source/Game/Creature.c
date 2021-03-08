@@ -12,6 +12,7 @@ static void CacheActiveCreatures(int *outLength, Handle *outHandles[]);
 static int creatureCapacity;
 static int creatureCount;
 static int creatureLowestFree;
+static Handle creatureProtagonist;
 static struct {
 	bool reserved;
 	unsigned int version;
@@ -21,7 +22,6 @@ static struct {
 	Handle sprite;
 	int stats[CREATURE_STAT__LENGTH];
 } *creatureData;
-static Handle creatureProtagonist;
 
 void InitCreatures(int capacity)
 {

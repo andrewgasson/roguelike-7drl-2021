@@ -14,37 +14,57 @@ void InitGame(void)
 {
 	Handle player;
 	Handle enemy;
-	TerminalTile playerSprite;
-	TerminalTile enemySprite;
+	TerminalTile playerTile;
+	TerminalTile enemyTile;
 
-	playerSprite.background = ALPHA_BLACK;
-	playerSprite.foreground = WHITE;
-	playerSprite.symbol = '@';
+	playerTile.background = ALPHA_BLACK;
+	playerTile.foreground = WHITE;
+	playerTile.symbol = '@';
 
-	enemySprite.background = ALPHA_BLACK;
-	enemySprite.foreground = RED;
-	enemySprite.symbol = 'E';
+	enemyTile.background = ALPHA_BLACK;
+	enemyTile.foreground = RED;
+	enemyTile.symbol = 'w';
 
-	InitSprites(32);
+	InitSprites(16);
 	InitCreatures(16);
 
-	player = SpawnCreature();
-	enemy = SpawnCreature();
+	// Spawn player
+	{
+		player = SpawnCreature();
 
-	if (!IsCreatureValid(player)) {
-		TraceLog(LOG_ERROR, "GAME: Player creature is invalid.");
-		return;
+		if (IsCreatureValid(player)) {
+			Vector2 position;
+
+			position.x = GetTerminalWidth() / 2;
+			position.y = GetTerminalHeight() / 2;
+
+			SetSpriteTile(GetCreatureSprite(player), playerTile);
+			SetCreaturePosition(player, position);
+			SetCreatureProtagonist(player);
+		} else {
+			TraceLog(LOG_ERROR, "GAME: Player creature is invalid.");
+			return;
+		}
 	}
 
-	if (IsSpriteValid(GetCreatureSprite(player)))
-		SetSpriteTile(GetCreatureSprite(player), playerSprite);
+	// Spawn enemies
+	{
+		Handle enemy;
 
-	if (IsSpriteValid(GetCreatureSprite(enemy)))
-		SetSpriteTile(GetCreatureSprite(enemy), enemySprite);
+		while (IsCreatureValid((enemy = SpawnCreature()))) {
+			Vector2 position;
+			int health;
 
-	SetCreaturePosition(enemy, (Vector2) { GetTerminalWidth() / 2, GetTerminalHeight() / 2 });
-	SetCreatureStat(enemy, CREATURE_STAT_HEALTH, 12 + GetRandomValue(2, 12));
-	SetCreatureProtagonist(player);
+			position.x = GetRandomValue(1, GetTerminalWidth() - 2);
+			position.y = GetRandomValue(1, GetTerminalHeight() - 2);
+			health = 12 + GetRandomValue(2, 12);
+
+			SetSpriteTile(GetCreatureSprite(enemy), enemyTile);
+			SetCreaturePosition(enemy, position);
+			SetCreatureStat(enemy, CREATURE_STAT_HEALTH, health);
+		}
+	}
+	
 }
 
 void UpdateGame(void)
