@@ -1,5 +1,8 @@
 #include "Game/Game.h"
 
+#include "Game/Compass.h"
+#include "Game/Creature.h"
+#include "Game/Handle.h"
 #include "Raylib/raylib.h"
 #include "Raylib/raymath.h"
 #include "Raylib/terminal.h"
@@ -9,39 +12,48 @@
 #define VECTOR2_SOUTH CLITERAL(Vector2){  0,  1 }
 #define VECTOR2_WEST  CLITERAL(Vector2){ -1,  0 }
 
-typedef struct Creature {
-	Vector2 position;
-	TerminalTile sprite;
-} Creature;
-
-static Creature player;
-
 void InitGame(void)
 {
-	player.position.x = 0;
-	player.position.y = 0;
-	player.sprite.background = ALPHA_BLACK;
-	player.sprite.foreground = WHITE;
-	player.sprite.symbol = '@';
+	Handle player;
+	TerminalTile playerSprite;
+
+	InitCreatures(16);
+
+	player = SpawnCreature();
+
+	if (!IsCreatureValid(player)) {
+		TraceLog(LOG_ERROR, "GAME: Player creature is invalid.");
+		return;
+	}
+
+	playerSprite.background = ALPHA_BLACK;
+	playerSprite.foreground = WHITE;
+	playerSprite.symbol = '@';
+	SetCreatureSprite(player, playerSprite);
+	SetCreatureProtagonist(player);
 }
 
 void UpdateGame(void)
 {
 	if (IsKeyDown(KEY_UP)) {
-		player.position = Vector2Add(player.position, VECTOR2_NORTH);
+		CreatureWalk(GetCreatureProtagonist(), COMPASS_NORTH);
 	} else if (IsKeyDown(KEY_RIGHT)) {
-		player.position = Vector2Add(player.position, VECTOR2_EAST);
+		CreatureWalk(GetCreatureProtagonist(), COMPASS_EAST);
 	} else if (IsKeyDown(KEY_DOWN)) {
-		player.position = Vector2Add(player.position, VECTOR2_SOUTH);
+		CreatureWalk(GetCreatureProtagonist(), COMPASS_SOUTH);
 	} else if (IsKeyDown(KEY_LEFT)) {
-		player.position = Vector2Add(player.position, VECTOR2_WEST);
+		CreatureWalk(GetCreatureProtagonist(), COMPASS_WEST);
 	}
 }
 
 void RenderGame(void)
 {
+	Handle protagonist;
+
 	ClearTerminal();
 
-	if (IsWithinTerminalV(player.position))
-		SetTerminalTileV(player.position, player.sprite);
+	protagonist = GetCreatureProtagonist();
+
+	if (IsCreatureValid(protagonist) && IsWithinTerminalV(GetCreaturePosition(protagonist)))
+		SetTerminalTileV(GetCreaturePosition(protagonist), GetCreatureSprite(protagonist));
 }
