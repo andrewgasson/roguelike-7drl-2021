@@ -160,6 +160,10 @@ void RenderSprites(void)
 			cache[j].index = i;
 			cache[j].version = spriteStatus[i].version;
 			j++;
+
+			// BREAK: Leave early if we've found all the instances.
+			if (j == spriteCapacity)
+				break;
 		}
 	}
 
