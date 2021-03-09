@@ -278,6 +278,7 @@ static void CacheActiveCreatures(int *outLength, Handle *outHandles[])
 	*outLength = 0;
 	*outHandles = MemAlloc(creatureCount * sizeof(**outHandles));
 
+	// CRASH: Allocation failure
 	if (!*outHandles) {
 		TraceLog(LOG_ERROR, TextFormat("CREATURE: Failed to allocate cache (size: %d)", creatureCount));
 		return;

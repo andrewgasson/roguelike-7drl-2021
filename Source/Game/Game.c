@@ -38,6 +38,7 @@ void InitGame(void)
 			SetCreaturePosition(player, position);
 			SetCreatureProtagonist(player);
 		} else {
+			// CRASH: Player failed to spawn
 			TraceLog(LOG_ERROR, "GAME: Player creature is invalid.");
 			return;
 		}
