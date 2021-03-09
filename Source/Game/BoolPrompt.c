@@ -61,7 +61,14 @@ static void OnOpenView(void)
 
 static void OnCloseView(void)
 {
-	// Do nothing
+	// Avoid memory leaks
+	promptIsOpen = false;
+	promptOnAccept = NULL;
+	promptOnDecline = NULL;
+	promptTitleText = NULL;
+	promptMessageText = NULL;
+	promptAcceptText = NULL;
+	promptDeclineText = NULL;
 }
 
 static void OnControlView(void)
