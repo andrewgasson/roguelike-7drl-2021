@@ -4,9 +4,6 @@
 #include "Raylib/raymath.h"
 #include <stdlib.h> // for NULL
 
-// Spawned creatures have a minimum version of 1, so a version of 0 is NULL.
-#define NULL_CREATURE (Handle) { 0 }
-
 static void CacheActiveCreatures(int *outLength, Handle *outHandles[]);
 
 static int creatureCapacity;
@@ -25,6 +22,8 @@ static struct {
 
 void InitCreatures(int capacity)
 {
+	int i;
+
 	if (capacity < 1)
 		capacity = 1;
 
@@ -39,7 +38,15 @@ void InitCreatures(int capacity)
 	}
 
 	creatureCapacity = capacity;
-	DestroyAllCreatures();
+
+	for (i = 0; i < creatureCapacity; i++)
+		creatureStatus[i].reserved = false;
+	
+	for (i = 0; i < creatureCapacity; i++)
+		creatureData[i].sprite = NULL_HANDLE;
+
+	creatureCount = 0;
+	creatureLowestFree = 0;
 	TraceLog(LOG_INFO, TextFormat("CREATURE: Initialized successfully (capacity: %d)", creatureCapacity));
 }
 
@@ -50,7 +57,7 @@ inline int MaxCreatures(void)
 
 inline bool IsCreatureValid(Handle creature)
 {
-	return creature.index < creatureCapacity
+	return !IsHandleNull(creature)
 		&& creatureStatus[creature.index].reserved
 		&& creatureStatus[creature.index].version == creature.version;
 }
@@ -88,7 +95,7 @@ Handle SpawnCreature(void)
 		}
 	}
 
-	return NULL_CREATURE;
+	return NULL_HANDLE;
 }
 
 void DestroyCreature(Handle creature)
@@ -196,9 +203,9 @@ Handle GetCreatureAtPosition(Vector2 position)
 	CacheActiveCreatures(&length, &cache);
 
 	if (!cache)
-		return NULL_CREATURE;
+		return NULL_HANDLE;
 
-	found = NULL_CREATURE;
+	found = NULL_HANDLE;
 
 	for (i = 0; i < length; i++) {
 		if (creatureData[cache[i].index].position.x == position.x

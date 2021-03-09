@@ -3,9 +3,6 @@
 #include "Raylib/raymath.h"
 #include <stdlib.h> // for NULL
 
-// Spawned sprites have a minimum version of 1, so a version of 0 is NULL.
-#define NULL_SPRITE (Handle) { 0 }
-
 static int spriteCapacity;
 static int spriteCount;
 static int spriteLowestFree;
@@ -46,7 +43,7 @@ inline int MaxSprites(void)
 
 inline bool IsSpriteValid(Handle sprite)
 {
-	return sprite.index < spriteCapacity
+	return !IsHandleNull(sprite)
 		&& spriteStatus[sprite.index].reserved
 		&& spriteStatus[sprite.index].version == sprite.version;
 }
@@ -83,7 +80,7 @@ Handle SpawnSprite(void)
 		}
 	}
 
-	return NULL_SPRITE;
+	return NULL_HANDLE;
 }
 
 inline void DestroySprite(Handle sprite)
