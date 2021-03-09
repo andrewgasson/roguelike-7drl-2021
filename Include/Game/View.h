@@ -23,6 +23,7 @@ bool ShouldRenderGameWorld(void);
 void ControlView(void);
 void RenderViews(void);
 
+extern const View VIEW_DEV_SANDBOX;
 extern const View VIEW_GAME_DEFAULT;
 extern const View VIEW_MAIN_MENU;
 
