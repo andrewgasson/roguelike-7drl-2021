@@ -7,30 +7,30 @@
 #define VIEW_INPUT_COOLDOWN 2
 #define VIEW_BLINK_COOLDOWN 10
 
-static void Open(void);
-static void Close(void);
-static void Control(void);
-static void Render(void);
+static void OnOpenView(void);
+static void OnCloseView(void);
+static void OnControlView(void);
+static void OnRenderView(void);
 
 const View VIEW_GAME_DEFAULT = {
-	.Open = Open,
-	.Close = Close,
-	.Control = Control,
-	.Render = Render,
+	.Open = OnOpenView,
+	.Close = OnCloseView,
+	.Control = OnControlView,
+	.Render = OnRenderView,
 	.requireGameWorldRender = true
 };
 
-static void Open(void)
+static void OnOpenView(void)
 {
 	//
 }
 
-static void Close(void)
+static void OnCloseView(void)
 {
 	//
 }
 
-static void Control(void)
+static void OnControlView(void)
 {
 	static int inputTimer = 0;
 
@@ -57,7 +57,7 @@ static void Control(void)
 	}
 }
 
-static void Render(void)
+static void OnRenderView(void)
 {
 	static int blinkTimer = 0;
 	TerminalTile gold;
