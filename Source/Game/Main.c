@@ -1,40 +1,17 @@
+#include "Game/Main.h"
+
 #include "Game/Game.h"
+#include "Game/Sprite.h"
+#include "Game/View.h"
 #include "Raylib/raylib.h"
 #include "Raylib/terminal.h"
 
-/*
-static void RainbowTerminal(void)
+static bool appRunning;
+
+void QuitApplication(void)
 {
-	int i;
-	int length;
-	TerminalTile *tiles;
-	
-	length = GetTerminalWidth() * GetTerminalHeight();
-	tiles = GetTerminalTileBuffer();
-
-	for (i = 0; i < length; i++) {
-		Color background;
-		Color foreground;
-		char symbol;
-
-		background.r = 128 + GetRandomValue(0, 127);
-		background.g = 128 + GetRandomValue(0, 127);
-		background.b = 128 + GetRandomValue(0, 127);
-		background.a = 255;
-
-		foreground.r = GetRandomValue(0, 128);
-		foreground.g = GetRandomValue(0, 128);
-		foreground.b = GetRandomValue(0, 128);
-		foreground.a = 128;
-
-		symbol = GetRandomValue('A', 'z');
-
-		tiles[i].background = background;
-		tiles[i].foreground = foreground;
-		tiles[i].symbol = symbol;
-	}
+	appRunning = false;
 }
-*/
 
 int main(int argc, char *argv[])
 {
@@ -61,10 +38,18 @@ int main(int argc, char *argv[])
 
 	// Start game loop
 	InitGame();
+	SetView(&VIEW_GAME_DEFAULT);
 
-	while (!WindowShouldClose()) {
-		UpdateGame();
-		RenderGame();
+	appRunning = true;
+
+	while (!WindowShouldClose() && appRunning) {
+		ControlView();
+		ClearTerminal();
+
+		if (ShouldRenderGameWorld())
+			RenderSprites();
+
+		RenderViews();
 		BeginDrawing();
 			ClearBackground(BLACK);
 			DrawTerminal();

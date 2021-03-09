@@ -74,7 +74,7 @@ void ClearTerminal(void)
 
 inline int GetTerminalXYtoI(int posX, int posY)
 {
-	return (posY * terminalWidth) + posX;
+	return (terminalWidth * posY) + posX;
 }
 
 inline int GetTerminalWidth(void)

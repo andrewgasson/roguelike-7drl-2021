@@ -5,10 +5,7 @@
 #include "Game/Handle.h"
 #include "Game/Sprite.h"
 #include "Raylib/raylib.h"
-#include "Raylib/raymath.h"
 #include "Raylib/terminal.h"
-
-#define GAME_INPUT_COOLDOWN 2
 
 void InitGame(void)
 {
@@ -64,37 +61,4 @@ void InitGame(void)
 		}
 	}
 	
-}
-
-void UpdateGame(void)
-{
-	static int inputTimer = 0;
-
-	// TEMP: Ideally keys have a hold-delay-process behaviour. This 
-	// temporary hack makes it easier to see each step without implementing
-	// that just yet
-	if (inputTimer > 0) {
-		inputTimer--;
-		return;
-	}
-
-	if (IsKeyDown(KEY_UP)) {
-		CreatureWalkOrInteract(GetCreatureProtagonist(), COMPASS_NORTH);
-		inputTimer = GAME_INPUT_COOLDOWN;
-	} else if (IsKeyDown(KEY_RIGHT)) {
-		CreatureWalkOrInteract(GetCreatureProtagonist(), COMPASS_EAST);
-		inputTimer = GAME_INPUT_COOLDOWN;
-	} else if (IsKeyDown(KEY_DOWN)) {
-		CreatureWalkOrInteract(GetCreatureProtagonist(), COMPASS_SOUTH);
-		inputTimer = GAME_INPUT_COOLDOWN;
-	} else if (IsKeyDown(KEY_LEFT)) {
-		CreatureWalkOrInteract(GetCreatureProtagonist(), COMPASS_WEST);
-		inputTimer = GAME_INPUT_COOLDOWN;
-	}
-}
-
-void RenderGame(void)
-{
-	ClearTerminal();
-	RenderSprites();
 }
