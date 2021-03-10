@@ -13,6 +13,8 @@ void OpenBoolPrompt(BoolPromptCallback onAccept, BoolPromptCallback onDecline, c
 void OpenMessagePrompt(const char *titleText, const char *messageText, const char *acceptText);
 void OpenStringPrompt(char **outString, int maxStringLength, const char *titleText, const char *messageText, const char *acceptText);
 
-void OpenQuitPrompt(void);
+void OpenNewGamePrompt(void);           // Bool prompt for starting a new game while a game is in play
+void OpenQuitGamePrompt(void);          // Bool prompt for quitting a game while a game is in play
+void OpenQuitPrompt(void);              // Bool prompt for quitting the application
 
 #endif // GAME_PROMPT_H

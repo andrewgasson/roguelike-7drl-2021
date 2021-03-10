@@ -34,6 +34,9 @@ static void OnControlView(void)
 {
 	static int inputTimer = 0;
 
+	if (IsKeyPressed(KEY_ESCAPE))
+		PushView(&VIEW_GAME_PAUSED);
+
 	// TEMP: Ideally keys have a hold-delay-process behaviour. This 
 	// temporary hack makes it easier to see each step without implementing
 	// that just yet
@@ -59,21 +62,5 @@ static void OnControlView(void)
 
 static void OnRenderView(void)
 {
-	static int blinkTimer = 0;
-	TerminalTile gold;
-
-	if (blinkTimer > 0) {
-		blinkTimer--;
-	} else {
-		blinkTimer = VIEW_BLINK_COOLDOWN;
-
-		if (ColorToInt(gold.background) == ColorToInt(BLUE))
-			gold.background = RED;
-		else
-			gold.background = BLUE;
-	}
-
-	gold.foreground = GOLD;
-	gold.symbol = '$';
-	SetTerminalTile(0, 0, gold);
+	// TODO: HUD
 }

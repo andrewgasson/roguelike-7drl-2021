@@ -25,6 +25,7 @@ void RenderViews(void);
 
 extern const View VIEW_DEV_SANDBOX;
 extern const View VIEW_GAME_DEFAULT;
+extern const View VIEW_GAME_PAUSED;
 extern const View VIEW_MAIN_MENU;
 
 #endif // GAME_VIEW_H
