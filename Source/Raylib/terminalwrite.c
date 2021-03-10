@@ -206,14 +206,15 @@ void WriteTerminalLetter(char letter)
 	} else if (letter == '\n' || letter == '\r') {
 		MoveTerminalCursorNextLine();
 	} else {
-		tile.background = ColorAlphaBlend(terminalBackPaint, GetTerminalTile(terminalCursorX, terminalCursorY).background, WHITE);
-		tile.foreground = ColorAlphaBlend(terminalForePaint, GetTerminalTile(terminalCursorX, terminalCursorY).foreground, WHITE);
+		tile.background = ColorAlphaBlend(GetTerminalTile(terminalCursorX, terminalCursorY).background, terminalBackPaint, WHITE);
+		tile.foreground = ColorAlphaBlend(GetTerminalTile(terminalCursorX, terminalCursorY).foreground, terminalForePaint, WHITE);
 		tile.symbol = letter;
 		SetTerminalTile(terminalCursorX, terminalCursorY, tile);
 		MoveTerminalCursorNext();
 	}
 }
 
+// TODO: Break per word for better wrapping
 void WriteTerminalText(const char *text)
 {
 	const char *letter;
@@ -240,6 +241,7 @@ void WriteTerminalText(const char *text)
 	} while (MoveTerminalCursorNext() && *letter != '\0');
 }
 
+// TODO: Break per word for better wrapping
 void WriteTerminalTextLength(const char *text, int maxLength)
 {
 	int i;

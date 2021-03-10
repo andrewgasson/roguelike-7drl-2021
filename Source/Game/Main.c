@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
 	SetConfigFlags(FLAG_VSYNC_HINT);
 	InitWindow(640, 480, "7DRL 2021");
 	SetTargetFPS(30);
+	SetExitKey(0);
 
 	// Setup terminal
 	InitTerminal(80, 26);
@@ -38,8 +39,7 @@ int main(int argc, char *argv[])
 
 	// Start game loop
 	InitGame();
-	SetView(&VIEW_GAME_DEFAULT);
-
+	SetView(&VIEW_MAIN_MENU);
 	appRunning = true;
 
 	while (!WindowShouldClose() && appRunning) {

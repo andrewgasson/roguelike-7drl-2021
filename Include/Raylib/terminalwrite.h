@@ -1,7 +1,7 @@
 #ifndef TERMINAL_WRITE_H
 #define TERMINAL_WRITE_H
 
-#include "terminal.h"
+#include "Raylib/terminal.h"
 
 //----------------------------------------------------------------------------------
 // Terminal cursor functions

@@ -1,7 +1,7 @@
 #ifndef TERMINAL_H
 #define TERMINAL_H
 
-#include "raylib.h"
+#include "Raylib/raylib.h"
 
 #define ALPHA_BLACK CLITERAL(Color){ 0, 0, 0, 0 }
 

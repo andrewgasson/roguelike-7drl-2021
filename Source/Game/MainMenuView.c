@@ -40,7 +40,9 @@ static void OnCloseView(void)
 
 static void OnControlView(void)
 {
-	if (IsKeyPressed(KEY_UP)) {
+	if (IsKeyReleased(KEY_ESCAPE)) {
+		OpenQuitPrompt();
+	} else if (IsKeyPressed(KEY_UP)) {
 		if (mainMenuCursor > VIEW_CURSOR_NEW_GAME)
 			mainMenuCursor--;
 	} else if (IsKeyPressed(KEY_DOWN)) {
@@ -58,7 +60,7 @@ static void OnControlView(void)
 			TraceLog(LOG_INFO, "VIEW: MainMenu: Showing help menu");
 			break;
 		case VIEW_CURSOR_QUIT:
-			OpenBoolPrompt(QuitApplication, NULL, "Quit", "Do you want to quit the game?", "Yes", "No, keep playing");
+			OpenQuitPrompt();
 			break;
 		default:
 			break;

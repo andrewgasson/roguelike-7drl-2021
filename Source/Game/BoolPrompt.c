@@ -4,6 +4,7 @@
 #include "Raylib/raylib.h"
 #include "Raylib/terminal.h"
 #include "Raylib/terminaldraw.h"
+#include "Raylib/terminalgui.h"
 #include "Raylib/terminalwrite.h"
 #include <string.h>
 
@@ -12,6 +13,9 @@ typedef enum {
 	VIEW_SELECTION_ACCEPT,
 	VIEW_SELECTION_DECLINE
 } ViewSelection;
+
+#define BOOL_PROMPT_DEFAULT_ACCEPT "Accept"
+#define BOOL_PROMPT_DEFAULT_DECLINE "Decline"
 
 static void OnOpenView(void);
 static void OnCloseView(void);
@@ -48,8 +52,8 @@ void OpenBoolPrompt(BoolPromptCallback onAccept, BoolPromptCallback onDecline, c
 	promptOnDecline = onDecline;
 	promptTitleText = titleText;
 	promptMessageText = messageText;
-	promptAcceptText = acceptText;
-	promptDeclineText = declineText;
+	promptAcceptText = (acceptText) ? acceptText : BOOL_PROMPT_DEFAULT_ACCEPT;
+	promptDeclineText = (declineText) ? declineText : BOOL_PROMPT_DEFAULT_DECLINE;
 
 	PushView(&BOOL_PROMPT_VIEW);
 }
@@ -61,92 +65,130 @@ static void OnOpenView(void)
 
 static void OnCloseView(void)
 {
-	// Avoid memory leaks
 	promptIsOpen = false;
-	promptOnAccept = NULL;
-	promptOnDecline = NULL;
-	promptTitleText = NULL;
-	promptMessageText = NULL;
-	promptAcceptText = NULL;
-	promptDeclineText = NULL;
 }
 
 static void OnControlView(void)
 {
-	// TODO
+	if (IsKeyReleased(KEY_ESCAPE) || IsKeyReleased(KEY_TAB)) {
+		PopView();
+
+		if (promptOnDecline)
+			promptOnDecline();
+	} else if (IsKeyReleased(KEY_ENTER) || IsKeyReleased(KEY_E)) {
+		if (promptSelection == VIEW_SELECTION_ACCEPT) {
+			PopView();
+
+			if (promptOnAccept)
+				promptOnAccept();
+		} else if (promptSelection == VIEW_SELECTION_DECLINE) {
+			PopView();
+
+			if (promptOnDecline)
+				promptOnDecline();
+		}
+	} else if (IsKeyPressed(KEY_LEFT)) {
+		if (promptAcceptText)
+			promptSelection = VIEW_SELECTION_ACCEPT;
+	} else if (IsKeyPressed(KEY_RIGHT)) {
+		if (promptDeclineText)
+			promptSelection = VIEW_SELECTION_DECLINE;
+	} else if (IsKeyPressed(KEY_UP)) {
+		promptSelection = VIEW_SELECTION_UNSELECTED;
+	}
 }
 
 static void OnRenderView(void)
 {
-	// Box
-	int boxPosX;
-	int boxPosY;
-	int boxWidth;
-	int boxHeight;
-	TerminalTile boxFill;
-	TerminalTile boxOutline;
+	static const int panelWidth = 40;
+	static const TerminalTile panelFill = { .background = GRAY, .foreground = WHITE, .symbol = ' ' };
+	static const TerminalTile panelOutline = { .background = GRAY, .foreground = WHITE, .symbol = ' ' };
+	int messageLength;
+	int messageWidth;
+	int messageHeight;
+	int panelPosX;
+	int panelPosY;
+	int panelHeight;
 
-	// Layout box
-	boxWidth = 40;
-	boxHeight = 20;
-	boxPosX = (GetTerminalWidth() - boxWidth) / 2;
-	boxPosY = (GetTerminalHeight() - boxHeight) / 2;
-	boxFill = (TerminalTile) { .background = WHITE, .foreground = BLACK, .symbol = 'X' };
-	boxOutline = (TerminalTile) { .background = BLACK, .foreground = DARKGRAY, .symbol = '+' };
-	DrawTerminalBox(boxPosX, boxPosY, boxWidth, boxHeight, boxFill, boxOutline);
+	// Fade entire background
+	// Box fill does not support transparency, so this doesn't behave as expected
+//	DrawTerminalBoxFill(0, 0, GetTerminalWidth(), GetTerminalHeight(), PROMPT_TILE);
 
-	// Layout title text
+	// Calculate message info
+	messageLength = promptMessageText ? strlen(promptMessageText) : 0;
+	messageWidth = panelWidth - 4;
+	messageHeight = (messageLength > 0) ? messageLength / messageWidth : 0;
+
+	// Layout panel
+	panelHeight = 4 + messageHeight + (promptAcceptText != NULL || promptDeclineText != NULL);
+	panelPosX = GetTerminalWidth() - panelWidth;
+	panelPosX = (panelPosX > 0) ? panelPosX / 2 : 0;
+	panelPosY = GetTerminalHeight() - panelHeight;
+	panelPosY = (panelPosY > 0) ? panelPosY / 2 : 0;
+	DrawTerminalBox(panelPosX, panelPosY, panelWidth, panelHeight, panelFill, panelOutline);
+
+	// Layout title
 	if (promptTitleText) {
 		int titlePosX;
 		int titleLength;
 
-		SetTerminalWriteBackPaint(boxFill.background);
-		SetTerminalWriteForePaint(boxOutline.foreground);
 		titleLength = strlen(promptTitleText);
-
-		if (titleLength > boxWidth - 2)
-			titleLength = boxWidth - 2;
-
-		titlePosX = (boxWidth - titleLength) / 2;
+		titleLength = (titleLength > panelWidth) ? panelWidth : titleLength;
+		titlePosX = panelPosX + ((panelWidth - titleLength) / 2);
 		SetTerminalCursorWrap(false, false);
-		SetTerminalCursorXY(titlePosX, boxPosY);
-		WriteTerminalText(promptTitleText);
-		MoveTerminalCursorNextLine();
+		SetTerminalWriteBackPaint(panelOutline.background);
+		SetTerminalWriteForePaint(panelOutline.foreground);
+		SetTerminalCursorXY(titlePosX, panelPosY);
+		WriteTerminalTextLength(promptTitleText, titleLength);
 	}
 
-	// Layout message text
-	if (promptMessageText) {
-		const int messageHorizontalPadding = 4;
-		const int messageVerticalPadding = 8;
+	// Layout message
+	if (messageLength > 0) {
 		int messageLineStart;
-		int messageLength;
-		int messageWidth;
-		int messageHeight;
-		
-		messageLineStart = 0;
-		messageLength = strlen(promptMessageText);
-		messageWidth = boxWidth - messageHorizontalPadding;
-		messageHeight = boxHeight - messageVerticalPadding;
-		SetTerminalCursorWrap(true, true);
-		SetTerminalWriteBackPaint(ALPHA_BLACK);
-		SetTerminalWriteForePaint(RAYWHITE);
+		int messageLengthRemainder;
 
-		while (messageLength > 0) {
-			MoveTerminalCursorRight(messageHorizontalPadding / 2);
-			WriteTerminalTextLength(&promptMessageText[messageLineStart], messageWidth);
-			messageLineStart += messageWidth;
-			messageLength -= messageWidth;
+		messageLineStart = 0;
+		messageLengthRemainder = messageLength;
+		SetTerminalCursorWrap(true, true);
+		MoveTerminalCursorDown(2);
+		SetTerminalWriteBackPaint(panelFill.background);
+		SetTerminalWriteForePaint(panelFill.foreground);
+
+		while (messageLengthRemainder > 0) {
+			int messageLineEnd;
+
+			messageLineEnd = (messageWidth < messageLengthRemainder) ? messageWidth : messageLengthRemainder;
+			SetTerminalCursorXY(panelPosX + 2, GetTerminalCursorY());
+			WriteTerminalTextLength(&promptMessageText[messageLineStart], messageLineEnd);
+			messageLineStart += messageLineEnd;
+			messageLengthRemainder -= messageLineEnd;
 			MoveTerminalCursorNextLine();
 		}
 	}
 
-	// Layout buttons
-	// TODO: Finish implementation!
-	if (promptAcceptText && promptDeclineText) {
-		//
-	} else if (promptAcceptText) {
-		//
-	} else {
-		//
+	// Layout options
+	{
+		int acceptLength;
+		int declineLength;
+		int acceptStart;
+		int declineStart;
+		int totalLength;
+		Color acceptForeground;
+		Color acceptBackground;
+		Color declineForeground;
+		Color declineBackground;
+
+		acceptLength = strlen(promptAcceptText);
+		declineLength = strlen(promptDeclineText);
+		totalLength = (acceptLength + 2) + 2 + (declineLength + 2);
+		acceptStart = panelPosX + ((panelWidth - totalLength) / 2);
+		declineStart = (acceptStart + acceptLength) + 3;
+		acceptForeground = (promptSelection == VIEW_SELECTION_ACCEPT) ? panelFill.background : panelFill.foreground;
+		acceptBackground = (promptSelection == VIEW_SELECTION_ACCEPT) ? panelFill.foreground : panelFill.background;
+		declineForeground = (promptSelection == VIEW_SELECTION_DECLINE) ? panelFill.background : panelFill.foreground;
+		declineBackground = (promptSelection == VIEW_SELECTION_DECLINE) ? panelFill.foreground : panelFill.background;
+		MoveTerminalCursorDown(1);
+		DrawTerminalGuiButton(acceptStart, GetTerminalCursorY(), promptAcceptText, acceptLength, acceptBackground, acceptForeground);
+		DrawTerminalGuiButton(declineStart, GetTerminalCursorY(), promptDeclineText, declineLength, declineBackground, declineForeground);
 	}
 }
