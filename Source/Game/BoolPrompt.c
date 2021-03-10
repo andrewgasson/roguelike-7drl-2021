@@ -1,5 +1,6 @@
 #include "Game/Prompt.h"
 
+#include "Game/Input.h"
 #include "Game/View.h"
 #include "Raylib/raylib.h"
 #include "Raylib/terminal.h"
@@ -70,12 +71,12 @@ static void OnCloseView(void)
 
 static void OnControlView(void)
 {
-	if (IsKeyReleased(KEY_ESCAPE) || IsKeyReleased(KEY_TAB)) {
+	if (IsInputActive(INPUT_UI_CANCEL)) {
 		PopView();
 
 		if (promptOnDecline)
 			promptOnDecline();
-	} else if (IsKeyReleased(KEY_ENTER) || IsKeyReleased(KEY_E)) {
+	} else if (IsInputActive(INPUT_UI_SUBMIT)) {
 		if (promptSelection == VIEW_SELECTION_ACCEPT) {
 			PopView();
 
@@ -87,13 +88,13 @@ static void OnControlView(void)
 			if (promptOnDecline)
 				promptOnDecline();
 		}
-	} else if (IsKeyPressed(KEY_LEFT)) {
+	} else if (IsInputActive(INPUT_UI_LEFT)) {
 		if (promptAcceptText)
 			promptSelection = VIEW_SELECTION_ACCEPT;
-	} else if (IsKeyPressed(KEY_RIGHT)) {
+	} else if (IsInputActive(INPUT_UI_RIGHT)) {
 		if (promptDeclineText)
 			promptSelection = VIEW_SELECTION_DECLINE;
-	} else if (IsKeyPressed(KEY_UP)) {
+	} else if (IsInputActive(INPUT_UI_UP)) {
 		promptSelection = VIEW_SELECTION_UNSELECTED;
 	}
 }

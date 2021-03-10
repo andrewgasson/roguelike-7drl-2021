@@ -2,6 +2,7 @@
 
 #include "Game/Creature.h"
 #include "Game/Game.h"
+#include "Game/Input.h"
 #include "Game/Sprite.h"
 #include "Game/View.h"
 #include "Raylib/raylib.h"
@@ -38,15 +39,17 @@ int main(int argc, char *argv[])
 		ClearBackground(BLACK);
 	EndDrawing();
 
-	// Initialize game
+	// Initialize modules
+	InitInput();
 	InitSprites(16);
 	InitCreatures(16);
-	SetView(&VIEW_MAIN_MENU);
 
-	// Start game loop
+	// Start engine loop
+	SetView(&VIEW_MAIN_MENU);
 	appRunning = true;
 
 	while (!WindowShouldClose() && appRunning) {
+		UpdateInput();
 		ControlView();
 		ClearTerminal();
 

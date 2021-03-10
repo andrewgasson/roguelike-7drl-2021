@@ -2,6 +2,7 @@
 
 #include "Game/Compass.h"
 #include "Game/Creature.h"
+#include "Game/Input.h"
 #include "Game/Prompt.h"
 #include "Raylib/terminal.h"
 #include "Raylib/terminaldraw.h"
@@ -43,13 +44,13 @@ static void OnCloseView(void)
 
 static void OnControlView(void)
 {
-	if (IsKeyPressed(KEY_ESCAPE) || IsKeyPressed(KEY_TAB)) {
+	if (IsInputActive(INPUT_UI_CANCEL)) {
 		PopView();
-	} else if (IsKeyPressed(KEY_UP) && viewCursor > VIEW_CURSOR_CONTINUE) {
+	} else if (IsInputActive(INPUT_UI_UP) && viewCursor > VIEW_CURSOR_CONTINUE) {
 		viewCursor--;
-	} else if (IsKeyPressed(KEY_DOWN) && viewCursor < VIEW_CURSOR_QUIT) {
+	} else if (IsInputActive(INPUT_UI_DOWN) && viewCursor < VIEW_CURSOR_QUIT) {
 		viewCursor++;
-	} else if (IsKeyPressed(KEY_ENTER)) {
+	} else if (IsInputActive(INPUT_UI_SUBMIT)) {
 		if (viewCursor == VIEW_CURSOR_CONTINUE)
 			PopView();
 		else if (viewCursor == VIEW_CURSOR_NEW_GAME)

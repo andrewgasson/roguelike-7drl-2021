@@ -1,6 +1,7 @@
 #include "Game/View.h"
 
 #include "Game/Game.h"
+#include "Game/Input.h"
 #include "Game/Main.h"
 #include "Game/Prompt.h"
 #include "Raylib/terminal.h"
@@ -41,15 +42,15 @@ static void OnCloseView(void)
 
 static void OnControlView(void)
 {
-	if (IsKeyReleased(KEY_ESCAPE)) {
+	if (IsInputActive(INPUT_UI_CANCEL)) {
 		OpenQuitPrompt();
-	} else if (IsKeyPressed(KEY_UP)) {
+	} else if (IsInputActive(INPUT_UI_UP)) {
 		if (mainMenuCursor > VIEW_CURSOR_NEW_GAME)
 			mainMenuCursor--;
-	} else if (IsKeyPressed(KEY_DOWN)) {
+	} else if (IsInputActive(INPUT_UI_DOWN)) {
 		if (mainMenuCursor < VIEW_CURSOR_QUIT)
 			mainMenuCursor++;
-	} else if (IsKeyPressed(KEY_ENTER)) {
+	} else if (IsInputActive(INPUT_UI_SUBMIT)) {
 		switch (mainMenuCursor) {
 		case VIEW_CURSOR_NEW_GAME:
 			NewGame();

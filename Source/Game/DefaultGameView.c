@@ -1,11 +1,9 @@
 #include "Game/View.h"
 
-#include "Game/Creature.h"
 #include "Game/Compass.h"
+#include "Game/Creature.h"
+#include "Game/Input.h"
 #include "Raylib/terminal.h"
-
-#define VIEW_INPUT_COOLDOWN 2
-#define VIEW_BLINK_COOLDOWN 10
 
 static void OnOpenView(void);
 static void OnCloseView(void);
@@ -32,32 +30,16 @@ static void OnCloseView(void)
 
 static void OnControlView(void)
 {
-	static int inputTimer = 0;
-
-	if (IsKeyPressed(KEY_ESCAPE))
+	if (IsInputActive(INPUT_UI_TOGGLE_PAUSE_MENU))
 		PushView(&VIEW_GAME_PAUSED);
-
-	// TEMP: Ideally keys have a hold-delay-process behaviour. This 
-	// temporary hack makes it easier to see each step without implementing
-	// that just yet
-	if (inputTimer > 0) {
-		inputTimer--;
-		return;
-	}
-
-	if (IsKeyDown(KEY_UP)) {
+	else if (IsInputActive(INPUT_GAME_WALK_NORTH))
 		CreatureWalkOrInteract(GetCreatureProtagonist(), COMPASS_NORTH);
-		inputTimer = VIEW_INPUT_COOLDOWN;
-	} else if (IsKeyDown(KEY_RIGHT)) {
+	else if (IsInputActive(INPUT_GAME_WALK_EAST))
 		CreatureWalkOrInteract(GetCreatureProtagonist(), COMPASS_EAST);
-		inputTimer = VIEW_INPUT_COOLDOWN;
-	} else if (IsKeyDown(KEY_DOWN)) {
+	else if (IsInputActive(INPUT_GAME_WALK_SOUTH))
 		CreatureWalkOrInteract(GetCreatureProtagonist(), COMPASS_SOUTH);
-		inputTimer = VIEW_INPUT_COOLDOWN;
-	} else if (IsKeyDown(KEY_LEFT)) {
+	else if (IsInputActive(INPUT_GAME_WALK_WEST))
 		CreatureWalkOrInteract(GetCreatureProtagonist(), COMPASS_WEST);
-		inputTimer = VIEW_INPUT_COOLDOWN;
-	}
 }
 
 static void OnRenderView(void)
