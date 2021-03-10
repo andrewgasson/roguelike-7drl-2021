@@ -5,65 +5,83 @@ static void SwapIntScalar(int *i0, int *i1);
 
 inline void DrawTerminalBox(int x, int y, int width, int height, TerminalTile fill, TerminalTile outline)
 {
-	// Efficient because there are no branches, and the outline might still 
-	// be culled entirely
 	DrawTerminalBoxFill(x, y, width, height, fill);
-//	DrawTerminalBoxOutline(x, y, width, height, outline);
+	DrawTerminalBoxOutline(x, y, width, height, outline);
 }
 
 void DrawTerminalBoxFill(int x, int y, int width, int height, TerminalTile fill)
 {
-	// BUG: TODO: There are a bunch of wierd bugs with this for some reason.
-//	int terminalWidth;
-//	int terminalHeight;
-//
-//	if (width < 0)
-//		SwapIntScalar(&x, &width);
-//
-//	if (height < 0)
-//		SwapIntScalar(&y, &height);
-//
-//	terminalWidth = GetTerminalWidth();
-//	terminalHeight = GetTerminalHeight();
-	width = x + width;
-	height = y + height;
-//	x = ClampInt(x, 0, terminalWidth);
-//	y = ClampInt(y, 0, terminalHeight);
-//	width = ClampInt(width, 0, terminalWidth);
-//	height = ClampInt(height, 0, terminalHeight);
+	int ix;
+	int iy;
+	int terminalWidth;
+	int terminalHeight;
+	int top;
+	int right;
+	int bottom;
+	int left;
 
-	for (; y < height; y++) {
-		for (; x < width; x++)
-			SetTerminalTile(x, y, fill);
+	terminalWidth = GetTerminalWidth();
+	terminalHeight = GetTerminalHeight();
+	top = ClampInt(y, 0, terminalHeight);
+	right = ClampInt(x + width, 0, terminalWidth);
+	bottom = ClampInt(y + height, 0, terminalHeight);
+	left = ClampInt(x, 0, terminalWidth);
+
+	if (left > right)
+		SwapIntScalar(&left, &right);
+
+	if (top > bottom)
+		SwapIntScalar(&top, &bottom);
+
+	for (iy = top; iy < bottom; iy++) {
+		for (ix = left; ix < right; ix++)
+			SetTerminalTile(ix, iy, fill);
 	}
 }
 
 void DrawTerminalBoxOutline(int x, int y, int width, int height, TerminalTile outline)
 {
-	// TODO: Implement outline that doesn't go out of bounds.
-	/*
 	int terminalWidth;
 	int terminalHeight;
-	int edgePosX;
-	int edgePosY;
-	int edgePosWidth;
-	int edgePosHeight;
-
-	// TODO!!!
+	int top;
+	int right;
+	int bottom;
+	int left;
+	int clampedTop;
+	int clampedRight;
+	int clampedBottom;
 
 	terminalWidth = GetTerminalWidth();
 	terminalHeight = GetTerminalHeight();
-	SortIntScalar(&x, &width);
-	SortIntScalar(&y, &height);
-	edgePosX = x;
-	edgePosY = y;
-	edgePosWidth = width;
-	edgePosHeight = height;
+	top = y;
+	right = x + width;
+	bottom = y + height;
+	left = x;
+	clampedTop = (top < 0) ? 0 : top;
+	clampedRight = (right > terminalWidth) ? terminalWidth : right;
+	clampedBottom = (bottom > terminalHeight) ? terminalHeight : bottom;
 
-	// Draw top-horizontal
-	// Draw vertical sides
-	// Draw bottom-horizontal
-	*/
+	// Draw top and bottom borders
+	if (top >= 0 && top < terminalHeight && left < clampedRight) {
+		int ix;
+
+		for (ix = left; ix < clampedRight; ix++)
+			SetTerminalTile(ix, top, outline);
+		
+		for (ix = left; ix < clampedRight; ix++)
+			SetTerminalTile(ix, bottom - 1, outline);
+	}
+
+	// Draw middle-left border
+	if (left >= 0 && left < terminalWidth && clampedTop < clampedBottom) {
+		int iy;
+
+		for (iy = top; iy < bottom; iy++)
+			SetTerminalTile(left, iy, outline);
+		
+		for (iy = top; iy < bottom; iy++)
+			SetTerminalTile(right - 1, iy, outline);
+	}
 }
 
 inline static int ClampInt(int i, int min, int max)
