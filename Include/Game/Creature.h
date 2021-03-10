@@ -12,7 +12,6 @@ typedef enum {
 #include "Raylib/raylib.h"
 #include "Raylib/terminal.h"
 
-// Sprite module must be initialized first.
 void InitCreatures(int capacity);
 int MaxCreatures(void);
 

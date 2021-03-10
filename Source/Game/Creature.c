@@ -88,6 +88,13 @@ Handle SpawnCreature(void)
 			creatureData[i].position.y = 0;
 			creatureData[i].sprite = SpawnSprite();
 
+			// EXIT: Sprite required
+			if (!IsSpriteValid(creatureData[i].sprite)) {
+				TraceLog(LOG_WARNING, TextFormat("CREATURE: Failed to spawn becaues there are not enough sprites (%d/%d)", CountSprites(), MaxSprites()));
+				DestroyCreature(handle);
+				return NULL_HANDLE;
+			}
+
 			for (j = 0; j < CREATURE_STAT__LENGTH; j++)
 				creatureData[i].stats[j] = 0;
 
