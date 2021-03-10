@@ -20,6 +20,7 @@ bool IsCreatureValid(Handle creature);
 Handle SpawnCreature(void);
 void DestroyCreature(Handle creature);
 void DestroyAllCreatures(void);
+void DestroyAllButProtagonistCreatures(void);
 int CountCreatures(void);
 
 void CreatureAttack(Handle creature, Compass direction);

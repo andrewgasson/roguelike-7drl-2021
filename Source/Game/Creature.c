@@ -115,16 +115,45 @@ void DestroyAllCreatures(void)
 {
 	int i;
 
-	for (i = 0; i < creatureCapacity; i++)
+	for (i = 0; i < creatureCapacity; i++) {
 		creatureStatus[i].reserved = false;
 
-	for (i = 0; i < creatureCapacity; i++) {
 		if (IsSpriteValid(creatureData[i].sprite))
 			DestroySprite(creatureData[i].sprite);
 	}
 
 	creatureCount = 0;
 	creatureLowestFree = 0;
+}
+
+void DestroyAllButProtagonistCreatures(void)
+{
+	int i;
+
+	// EXIT: If there is no protagonist, do standard destroy all creatures
+	if (!IsCreatureValid(creatureProtagonist)) {
+		DestroyAllCreatures();
+		return;
+	}
+
+	// Destroy all creatures with indexes lower than protagonist
+	for (i = 0; i < creatureProtagonist.index; i++) {
+		creatureStatus[i].reserved = false;
+		
+		if (IsSpriteValid(creatureData[i].sprite))
+			DestroySprite(creatureData[i].sprite);
+	}
+
+	// Destroy all creatures with indexes higher than protagonist
+	for (i = creatureProtagonist.index + 1; i < creatureCapacity; i++) {
+		creatureStatus[i].reserved = false;
+		
+		if (IsSpriteValid(creatureData[i].sprite))
+			DestroySprite(creatureData[i].sprite);
+	}
+
+	creatureCount = 1;
+	creatureLowestFree = (creatureProtagonist.index > 0) ? 0 : 1;
 }
 
 inline int CountCreatures(void)
