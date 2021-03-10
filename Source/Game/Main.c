@@ -1,5 +1,6 @@
 #include "Game/Main.h"
 
+#include "Game/Creature.h"
 #include "Game/Game.h"
 #include "Game/Sprite.h"
 #include "Game/View.h"
@@ -37,9 +38,12 @@ int main(int argc, char *argv[])
 		ClearBackground(BLACK);
 	EndDrawing();
 
-	// Start game loop
-	InitGame();
+	// Initialize game
+	InitSprites(16);
+	InitCreatures(16);
 	SetView(&VIEW_MAIN_MENU);
+
+	// Start game loop
 	appRunning = true;
 
 	while (!WindowShouldClose() && appRunning) {

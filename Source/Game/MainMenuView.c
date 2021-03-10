@@ -1,5 +1,6 @@
 #include "Game/View.h"
 
+#include "Game/Game.h"
 #include "Game/Main.h"
 #include "Game/Prompt.h"
 #include "Raylib/terminal.h"
@@ -51,7 +52,8 @@ static void OnControlView(void)
 	} else if (IsKeyPressed(KEY_ENTER)) {
 		switch (mainMenuCursor) {
 		case VIEW_CURSOR_NEW_GAME:
-			TraceLog(LOG_INFO, "VIEW: MainMenu: Starting new game");
+			NewGame();
+			SetView(&VIEW_GAME_DEFAULT);
 			break;
 		case VIEW_CURSOR_LOAD_GAME:
 			TraceLog(LOG_INFO, "VIEW: MainMenu: Loading new game");
