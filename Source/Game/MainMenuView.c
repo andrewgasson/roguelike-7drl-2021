@@ -9,11 +9,11 @@
 #include <stdlib.h> // for NULL
 
 typedef enum {
-	VIEW_CURSOR_NEW_GAME,
-	VIEW_CURSOR_LOAD_GAME,
-	VIEW_CURSOR_HELP,
-	VIEW_CURSOR_QUIT
-} ViewCursor;
+	MAIN_MENU_CURSOR_NEW_GAME,
+	MAIN_MENU_CURSOR_LOAD_GAME,
+	MAIN_MENU_CURSOR_HELP,
+	MAIN_MENU_CURSOR_QUIT
+} MainMenuCursor;
 
 static void OnOpenView(void);
 static void OnCloseView(void);
@@ -28,11 +28,11 @@ const View VIEW_MAIN_MENU = {
 	.requireGameWorldRender = false
 };
 
-static ViewCursor mainMenuCursor;
+static MainMenuCursor mainMenuCursor;
 
 static void OnOpenView(void)
 {
-	mainMenuCursor = VIEW_CURSOR_NEW_GAME;
+	mainMenuCursor = MAIN_MENU_CURSOR_NEW_GAME;
 }
 
 static void OnCloseView(void)
@@ -45,24 +45,24 @@ static void OnControlView(void)
 	if (IsInputActive(INPUT_UI_CANCEL)) {
 		OpenQuitPrompt();
 	} else if (IsInputActive(INPUT_UI_UP)) {
-		if (mainMenuCursor > VIEW_CURSOR_NEW_GAME)
+		if (mainMenuCursor > MAIN_MENU_CURSOR_NEW_GAME)
 			mainMenuCursor--;
 	} else if (IsInputActive(INPUT_UI_DOWN)) {
-		if (mainMenuCursor < VIEW_CURSOR_QUIT)
+		if (mainMenuCursor < MAIN_MENU_CURSOR_QUIT)
 			mainMenuCursor++;
 	} else if (IsInputActive(INPUT_UI_SUBMIT)) {
 		switch (mainMenuCursor) {
-		case VIEW_CURSOR_NEW_GAME:
+		case MAIN_MENU_CURSOR_NEW_GAME:
 			NewGame();
 			SetView(&VIEW_GAME_DEFAULT);
 			break;
-		case VIEW_CURSOR_LOAD_GAME:
+		case MAIN_MENU_CURSOR_LOAD_GAME:
 			TraceLog(LOG_INFO, "VIEW: MainMenu: Loading new game");
 			break;
-		case VIEW_CURSOR_HELP:
+		case MAIN_MENU_CURSOR_HELP:
 			TraceLog(LOG_INFO, "VIEW: MainMenu: Showing help menu");
 			break;
-		case VIEW_CURSOR_QUIT:
+		case MAIN_MENU_CURSOR_QUIT:
 			OpenQuitPrompt();
 			break;
 		default:
@@ -85,7 +85,7 @@ static void OnRenderView(void)
 	// Draw "New Game" option
 	MoveTerminalCursorNextLine();
 
-	if (mainMenuCursor == VIEW_CURSOR_NEW_GAME) {
+	if (mainMenuCursor == MAIN_MENU_CURSOR_NEW_GAME) {
 		SetTerminalWriteForePaint(WHITE);
 		WriteTerminalText("  > New Game");
 	} else {
@@ -96,7 +96,7 @@ static void OnRenderView(void)
 	// Draw "Load Game" option
 	MoveTerminalCursorNextLine();
 
-	if (mainMenuCursor == VIEW_CURSOR_LOAD_GAME) {
+	if (mainMenuCursor == MAIN_MENU_CURSOR_LOAD_GAME) {
 		SetTerminalWriteForePaint(WHITE);
 		WriteTerminalText("  > Load Game");
 	} else {
@@ -107,7 +107,7 @@ static void OnRenderView(void)
 	// Draw "Help" option
 	MoveTerminalCursorNextLine();
 
-	if (mainMenuCursor == VIEW_CURSOR_HELP) {
+	if (mainMenuCursor == MAIN_MENU_CURSOR_HELP) {
 		SetTerminalWriteForePaint(WHITE);
 		WriteTerminalText("  > Help");
 	} else {
@@ -118,7 +118,7 @@ static void OnRenderView(void)
 	// Draw "Quit" option
 	MoveTerminalCursorNextLine();
 
-	if (mainMenuCursor == VIEW_CURSOR_QUIT) {
+	if (mainMenuCursor == MAIN_MENU_CURSOR_QUIT) {
 		SetTerminalWriteForePaint(WHITE);
 		WriteTerminalText("  > Quit");
 	} else {

@@ -9,13 +9,13 @@
 #include "Raylib/terminalwrite.h"
 
 typedef enum {
-	VIEW_CURSOR_CONTINUE,
-	VIEW_CURSOR_NEW_GAME,
-	VIEW_CURSOR_LOAD_GAME,
-	VIEW_CURSOR_SAVE_GAME,
-	VIEW_CURSOR_HELP,
-	VIEW_CURSOR_QUIT
-} ViewCursor;
+	PAUSED_GAME_CURSOR_CONTINUE,
+	PAUSED_GAME_CURSOR_NEW_GAME,
+	PAUSED_GAME_CURSOR_LOAD_GAME,
+	PAUSED_GAME_CURSOR_SAVE_GAME,
+	PAUSED_GAME_CURSOR_HELP,
+	PAUSED_GAME_CURSOR_QUIT
+} PausedGameCursor;
 
 static void OnOpenView(void);
 static void OnCloseView(void);
@@ -30,11 +30,11 @@ const View VIEW_GAME_PAUSED = {
 	.requireGameWorldRender = true
 };
 
-static ViewCursor viewCursor;
+static PausedGameCursor pausedGameCursor;
 
 static void OnOpenView(void)
 {
-	viewCursor = VIEW_CURSOR_CONTINUE;
+	pausedGameCursor = PAUSED_GAME_CURSOR_CONTINUE;
 }
 
 static void OnCloseView(void)
@@ -46,16 +46,16 @@ static void OnControlView(void)
 {
 	if (IsInputActive(INPUT_UI_CANCEL)) {
 		PopView();
-	} else if (IsInputActive(INPUT_UI_UP) && viewCursor > VIEW_CURSOR_CONTINUE) {
-		viewCursor--;
-	} else if (IsInputActive(INPUT_UI_DOWN) && viewCursor < VIEW_CURSOR_QUIT) {
-		viewCursor++;
+	} else if (IsInputActive(INPUT_UI_UP) && pausedGameCursor > PAUSED_GAME_CURSOR_CONTINUE) {
+		pausedGameCursor--;
+	} else if (IsInputActive(INPUT_UI_DOWN) && pausedGameCursor < PAUSED_GAME_CURSOR_QUIT) {
+		pausedGameCursor++;
 	} else if (IsInputActive(INPUT_UI_SUBMIT)) {
-		if (viewCursor == VIEW_CURSOR_CONTINUE)
+		if (pausedGameCursor == PAUSED_GAME_CURSOR_CONTINUE)
 			PopView();
-		else if (viewCursor == VIEW_CURSOR_NEW_GAME)
+		else if (pausedGameCursor == PAUSED_GAME_CURSOR_NEW_GAME)
 			OpenNewGamePrompt();
-		else if (viewCursor == VIEW_CURSOR_QUIT)
+		else if (pausedGameCursor == PAUSED_GAME_CURSOR_QUIT)
 			OpenQuitGamePrompt();
 	}
 }
@@ -84,7 +84,7 @@ static void OnRenderView(void)
 	// Layout continue option
 	SetTerminalCursorXY(leftPadding, GetTerminalCursorY() + 3);
 
-	if (viewCursor == VIEW_CURSOR_CONTINUE) {
+	if (pausedGameCursor == PAUSED_GAME_CURSOR_CONTINUE) {
 		SetTerminalWriteForePaint(WHITE);
 		WriteTerminalText("> Continue");
 	} else {
@@ -95,7 +95,7 @@ static void OnRenderView(void)
 	// Layout new game option
 	SetTerminalCursorXY(leftPadding, GetTerminalCursorY() + 2);
 
-	if (viewCursor == VIEW_CURSOR_NEW_GAME) {
+	if (pausedGameCursor == PAUSED_GAME_CURSOR_NEW_GAME) {
 		SetTerminalWriteForePaint(WHITE);
 		WriteTerminalText("> New Game");
 	} else {
@@ -106,7 +106,7 @@ static void OnRenderView(void)
 	// Layout load game option
 	SetTerminalCursorXY(leftPadding, GetTerminalCursorY() + 2);
 
-	if (viewCursor == VIEW_CURSOR_LOAD_GAME) {
+	if (pausedGameCursor == PAUSED_GAME_CURSOR_LOAD_GAME) {
 		SetTerminalWriteForePaint(WHITE);
 		WriteTerminalText("> Load Game");
 	} else {
@@ -117,7 +117,7 @@ static void OnRenderView(void)
 	// Layout save game option
 	SetTerminalCursorXY(leftPadding, GetTerminalCursorY() + 2);
 
-	if (viewCursor == VIEW_CURSOR_SAVE_GAME) {
+	if (pausedGameCursor == PAUSED_GAME_CURSOR_SAVE_GAME) {
 		SetTerminalWriteForePaint(WHITE);
 		WriteTerminalText("> Save Game");
 	} else {
@@ -128,7 +128,7 @@ static void OnRenderView(void)
 	// Layout help option
 	SetTerminalCursorXY(leftPadding, GetTerminalCursorY() + 2);
 
-	if (viewCursor == VIEW_CURSOR_HELP) {
+	if (pausedGameCursor == PAUSED_GAME_CURSOR_HELP) {
 		SetTerminalWriteForePaint(WHITE);
 		WriteTerminalText("> Help");
 	} else {
@@ -139,7 +139,7 @@ static void OnRenderView(void)
 	// Layout quit option
 	SetTerminalCursorXY(leftPadding, GetTerminalCursorY() + 2);
 
-	if (viewCursor == VIEW_CURSOR_QUIT) {
+	if (pausedGameCursor == PAUSED_GAME_CURSOR_QUIT) {
 		SetTerminalWriteForePaint(WHITE);
 		WriteTerminalText("> Quit");
 	} else {

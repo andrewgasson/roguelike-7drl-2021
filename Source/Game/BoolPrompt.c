@@ -10,10 +10,10 @@
 #include <string.h>
 
 typedef enum {
-	VIEW_SELECTION_UNSELECTED,
-	VIEW_SELECTION_ACCEPT,
-	VIEW_SELECTION_DECLINE
-} ViewSelection;
+	BOOL_PROMPT_CURSOR_UNSELECTED,
+	BOOL_PROMPT_CURSOR_ACCEPT,
+	BOOL_PROMPT_CURSOR_DECLINE
+} BoolPromptCursor;
 
 #define BOOL_PROMPT_DEFAULT_ACCEPT "Accept"
 #define BOOL_PROMPT_DEFAULT_DECLINE "Decline"
@@ -38,13 +38,13 @@ static const char *promptTitleText;
 static const char *promptMessageText;
 static const char *promptAcceptText;
 static const char *promptDeclineText;
-static ViewSelection promptSelection;
+static BoolPromptCursor promptSelection;
 
 void OpenBoolPrompt(BoolPromptCallback onAccept, BoolPromptCallback onDecline, const char *titleText, const char *messageText, const char *acceptText, const char *declineText)
 {
 	// CRASH: Only one prompt allowed at a time.
 	if (promptIsOpen) {
-		TraceLog(LOG_ERROR, "PROMPT: Only one BoolPrompt allowed open at a time");
+		TraceLog(LOG_ERROR, "PROMPT: BoolPrompt is already open");
 		return;
 	}
 
@@ -61,7 +61,7 @@ void OpenBoolPrompt(BoolPromptCallback onAccept, BoolPromptCallback onDecline, c
 
 static void OnOpenView(void)
 {
-	promptSelection = VIEW_SELECTION_UNSELECTED;
+	promptSelection = BOOL_PROMPT_CURSOR_UNSELECTED;
 }
 
 static void OnCloseView(void)
@@ -77,12 +77,12 @@ static void OnControlView(void)
 		if (promptOnDecline)
 			promptOnDecline();
 	} else if (IsInputActive(INPUT_UI_SUBMIT)) {
-		if (promptSelection == VIEW_SELECTION_ACCEPT) {
+		if (promptSelection == BOOL_PROMPT_CURSOR_ACCEPT) {
 			PopView();
 
 			if (promptOnAccept)
 				promptOnAccept();
-		} else if (promptSelection == VIEW_SELECTION_DECLINE) {
+		} else if (promptSelection == BOOL_PROMPT_CURSOR_DECLINE) {
 			PopView();
 
 			if (promptOnDecline)
@@ -90,12 +90,12 @@ static void OnControlView(void)
 		}
 	} else if (IsInputActive(INPUT_UI_LEFT)) {
 		if (promptAcceptText)
-			promptSelection = VIEW_SELECTION_ACCEPT;
+			promptSelection = BOOL_PROMPT_CURSOR_ACCEPT;
 	} else if (IsInputActive(INPUT_UI_RIGHT)) {
 		if (promptDeclineText)
-			promptSelection = VIEW_SELECTION_DECLINE;
+			promptSelection = BOOL_PROMPT_CURSOR_DECLINE;
 	} else if (IsInputActive(INPUT_UI_UP)) {
-		promptSelection = VIEW_SELECTION_UNSELECTED;
+		promptSelection = BOOL_PROMPT_CURSOR_UNSELECTED;
 	}
 }
 
@@ -184,10 +184,10 @@ static void OnRenderView(void)
 		totalLength = (acceptLength + 2) + 2 + (declineLength + 2);
 		acceptStart = panelPosX + ((panelWidth - totalLength) / 2);
 		declineStart = (acceptStart + acceptLength) + 3;
-		acceptForeground = (promptSelection == VIEW_SELECTION_ACCEPT) ? panelFill.background : panelFill.foreground;
-		acceptBackground = (promptSelection == VIEW_SELECTION_ACCEPT) ? panelFill.foreground : panelFill.background;
-		declineForeground = (promptSelection == VIEW_SELECTION_DECLINE) ? panelFill.background : panelFill.foreground;
-		declineBackground = (promptSelection == VIEW_SELECTION_DECLINE) ? panelFill.foreground : panelFill.background;
+		acceptForeground = (promptSelection == BOOL_PROMPT_CURSOR_ACCEPT) ? panelFill.background : panelFill.foreground;
+		acceptBackground = (promptSelection == BOOL_PROMPT_CURSOR_ACCEPT) ? panelFill.foreground : panelFill.background;
+		declineForeground = (promptSelection == BOOL_PROMPT_CURSOR_DECLINE) ? panelFill.background : panelFill.foreground;
+		declineBackground = (promptSelection == BOOL_PROMPT_CURSOR_DECLINE) ? panelFill.foreground : panelFill.background;
 		MoveTerminalCursorDown(1);
 		DrawTerminalGuiButton(acceptStart, GetTerminalCursorY(), promptAcceptText, acceptLength, acceptBackground, acceptForeground);
 		DrawTerminalGuiButton(declineStart, GetTerminalCursorY(), promptDeclineText, declineLength, declineBackground, declineForeground);

@@ -166,7 +166,7 @@ Vector2 CompassToVector2(Compass compass)
 	case COMPASS_NORTH_WEST: return (Vector2) { -1, -1 };
 	default:
 		// CRASH: Implementation failure
-		TraceLog(LOG_ERROR, TextFormat("COMPASS: Vector2 conversion for value \"%d\" is not implemented", compass));
+		TraceLog(LOG_ERROR, TextFormat("COMPASS: CompassToVector2() case %d is not implemented", compass));
 		return (Vector2) { 0, 0 };
 	}
 }

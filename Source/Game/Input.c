@@ -10,9 +10,8 @@ typedef enum {
 	INPUT_KEY_STATE_RELEASED
 } InputKeyState;
 
-#define INPUT_PULSE_MIN_DOWN_TIME 0.33L
-#define INPUT_PULSE_COOLDOWN 0.066L
-
+static double inputPulseMinDownTime;
+static double inputPulseCooldown;
 static struct {
 	struct {
 		int primaryKey;
@@ -42,6 +41,9 @@ bool IsInputActive(Input input)
 
 void LoadDefaultInputConfig(void)
 {
+	inputPulseMinDownTime = 0.33L;
+	inputPulseCooldown = 0.0745L;
+
 	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.primaryKey = KEY_UP;
 	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.secondaryKey = KEY_W;
 	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.state = INPUT_KEY_STATE_DOWN_PULSE;
@@ -182,8 +184,8 @@ void UpdateInput(void)
 			inputInfo[i].stateInfo.downTime += frameTime;
 			inputInfo[i].stateInfo.pulseTimer += frameTime;
 
-			if (inputInfo[i].stateInfo.pulseTimer > INPUT_PULSE_COOLDOWN) {
-				if (inputInfo[i].stateInfo.downTime > INPUT_PULSE_MIN_DOWN_TIME)
+			if (inputInfo[i].stateInfo.pulseTimer > inputPulseCooldown) {
+				if (inputInfo[i].stateInfo.downTime > inputPulseMinDownTime)
 					pulsed = true;
 
 				inputInfo[i].stateInfo.pulseTimer = 0L;

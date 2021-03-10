@@ -90,7 +90,7 @@ Handle SpawnCreature(void)
 
 			// EXIT: Sprite required
 			if (!IsSpriteValid(creatureData[i].sprite)) {
-				TraceLog(LOG_WARNING, TextFormat("CREATURE: Failed to spawn becaues there are not enough sprites (%d/%d)", CountSprites(), MaxSprites()));
+				TraceLog(LOG_WARNING, TextFormat("CREATURE: Failed to spawn because there are not enough sprites (%d/%d)", CountSprites(), MaxSprites()));
 				DestroyCreature(handle);
 				return NULL_HANDLE;
 			}

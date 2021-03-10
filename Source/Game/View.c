@@ -112,7 +112,7 @@ void ControlView(void)
 {
 	// CRASH: There must be at least 1 view
 	if (viewCount == 0) {
-		TraceLog(LOG_ERROR, "VIEW: No view is set.");
+		TraceLog(LOG_ERROR, "VIEW: No view is set");
 		return;
 	}
 

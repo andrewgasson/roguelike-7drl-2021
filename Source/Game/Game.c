@@ -41,7 +41,7 @@ Handle SpawnProtagonist(void)
 
 	// CRASH: Protagonist failed to spawn
 	if (!IsCreatureValid(protagonist)) {
-		TraceLog(LOG_ERROR, "GAME: Failed to spawn a protagonist");
+		TraceLog(LOG_ERROR, "GAME: Failed to spawn the protagonist");
 		return NULL_HANDLE;
 	}
 
