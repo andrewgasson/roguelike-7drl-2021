@@ -306,9 +306,7 @@ void KillCreature(Handle creature)
 inline void SetCreaturePosition(Handle creature, Vector2 position)
 {
 	creatureData[creature.index].position = position;
-	
-	if (IsSpriteValid(creatureData[creature.index].sprite))
-		SetSpritePosition(creatureData[creature.index].sprite, position);
+	SetSpritePosition(creatureData[creature.index].sprite, position);
 }
 
 inline void SetCreatureProtagonist(Handle creature)
