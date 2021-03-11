@@ -25,6 +25,8 @@ void DestroyAllButProtagonistCreatures(void);
 int CountCreatures(void);
 
 void CreatureAttack(Handle creature, Compass direction);
+void CreatureCloseDoor(Handle creature, Compass direction);
+void CreatureOpenDoor(Handle creature, Compass direction);
 void CreatureWalk(Handle creature, Compass direction);
 void CreatureWalkOrInteract(Handle creature, Compass direction);
 Handle GetCreatureAtPosition(Vector2 position);

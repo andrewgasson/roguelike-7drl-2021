@@ -1,6 +1,7 @@
 #include "Game/Main.h"
 
 #include "Game/Creature.h"
+#include "Game/Door.h"
 #include "Game/Game.h"
 #include "Game/Input.h"
 #include "Game/Sprite.h"
@@ -43,7 +44,8 @@ int main(int argc, char *argv[])
 	// Initialize modules
 	InitInput();
 	InitTerrain(GetTerminalWidth(), GetTerminalHeight(), 1);
-	InitSprites(16);
+	InitSprites(32);
+	InitDoors(16);
 	InitCreatures(16);
 
 	// Start engine loop

@@ -1,5 +1,6 @@
 #include "Game/Creature.h"
 
+#include "Game/Door.h"
 #include "Game/Game.h"
 #include "Game/Prompt.h"
 #include "Game/Sprite.h"
@@ -208,36 +209,105 @@ void CreatureAttack(Handle creature, Compass direction)
 	}
 }
 
+void CreatureCloseDoor(Handle creature, Compass direction)
+{
+	Handle obstacle;
+	Vector2 destination;
+
+	destination = Vector2Add(GetCreaturePosition(creature), CompassToVector2(direction));
+	obstacle = GetDoorAtPosition(destination);
+
+	if (IsDoorValid(obstacle)) {
+		if (IsDoorOpened(obstacle)) {
+			SetDoorOpened(obstacle, false);
+
+			if (IsCreatureProtagonist(creature))
+				TraceLog(LOG_INFO, "CREATURE: Protagonist closed a door");
+		}
+	}
+}
+
+void CreatureOpenDoor(Handle creature, Compass direction)
+{
+	Handle obstacle;
+	Vector2 destination;
+
+	destination = Vector2Add(GetCreaturePosition(creature), CompassToVector2(direction));
+	obstacle = GetDoorAtPosition(destination);
+
+	if (IsDoorValid(obstacle)) {
+		if (!IsDoorOpened(obstacle)) {
+			SetDoorOpened(obstacle, true);
+
+			if (IsCreatureProtagonist(creature))
+				TraceLog(LOG_INFO, "CREATURE: Protagonist opened a door");
+		}
+	}
+}
+
 void CreatureWalk(Handle creature, Compass direction)
 {
 	Handle obstacle;
 	Vector2 destination;
 
 	destination = Vector2Add(GetCreaturePosition(creature), CompassToVector2(direction));
-	obstacle = GetCreatureAtPosition(destination);
 
-	if (IsCreatureValid(obstacle)) {
-		TraceLog(LOG_INFO, "CREATURE: Colliding with obstacle!");
-		return;
+	// Check for doors
+	{
+		obstacle = GetDoorAtPosition(destination);
+
+		if (IsDoorValid(obstacle)) {
+			if (!IsDoorOpened(obstacle)) {
+				if (IsCreatureProtagonist(creature))
+					TraceLog(LOG_INFO, "CREATURE: Protagonist walked into a door");
+
+				return;
+			}
+		}
 	}
 
+	// Check for creatures
+	{
+		obstacle = GetCreatureAtPosition(destination);
+
+		if (IsCreatureValid(obstacle)) {
+			if (IsCreatureProtagonist(creature))
+				TraceLog(LOG_INFO, "CREATURE: Protagonist walked into a creature");
+
+			return;
+		}
+	}
+
+	// No collision
 	SetCreaturePosition(creature, destination);
 }
 
-// This is not an effecient function. However, it should really only be called 
-// for the protagonist.
+// NOTE: This is inefficient. However, it should only be used by the protagonist
 void CreatureWalkOrInteract(Handle creature, Compass direction)
 {
 	Vector2 destination;
 	Handle obstacle;
 
 	destination = Vector2Add(GetCreaturePosition(creature), CompassToVector2(direction));
+
+	// Check for door collision
+	obstacle = GetDoorAtPosition(destination);
+
+	if (IsDoorValid(obstacle) && !IsDoorOpened(obstacle)) {
+		CreatureOpenDoor(obstacle, direction);
+		return;
+	}
+
+	// Check for creature collision
 	obstacle = GetCreatureAtPosition(destination);
 
-	if (IsCreatureValid(obstacle))
+	if (IsCreatureValid(obstacle)) {
 		CreatureAttack(creature, direction);
-	else
-		CreatureWalk(creature, direction);
+		return;
+	}
+
+	// No collision
+	CreatureWalk(creature, direction);
 }
 
 Handle GetCreatureAtPosition(Vector2 position)

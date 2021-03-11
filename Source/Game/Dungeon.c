@@ -1,6 +1,7 @@
 #include "Game/Dungeon.h"
 
 #include "Game/Creature.h"
+#include "Game/Door.h"
 #include "Game/Handle.h"
 #include "Game/Sprite.h"
 #include "Raylib/terminal.h"
@@ -38,4 +39,20 @@ void GenerateBasicDungeon(void)
 		DestroyCreature(enemy);
 
 	SetCreaturePosition(GetCreatureProtagonist(), (Vector2) { startPosX, startPosY });
+
+	// Spawn door (DEMO)
+	{
+		Handle door;
+		Vector2 doorPosition;
+	
+		door = SpawnDoor();
+		doorPosition = GetCreaturePosition(GetCreatureProtagonist());
+		doorPosition.y--;
+		SetDoorPosition(door, doorPosition);
+	}
+}
+
+void GenerateCaveDungeon(void)
+{
+	//
 }
