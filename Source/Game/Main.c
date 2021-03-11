@@ -4,6 +4,7 @@
 #include "Game/Game.h"
 #include "Game/Input.h"
 #include "Game/Sprite.h"
+#include "Game/Terrain.h"
 #include "Game/View.h"
 #include "Raylib/raylib.h"
 #include "Raylib/terminal.h"
@@ -41,6 +42,7 @@ int main(int argc, char *argv[])
 
 	// Initialize modules
 	InitInput();
+	InitTerrain(GetTerminalWidth(), GetTerminalHeight(), 1);
 	InitSprites(16);
 	InitCreatures(16);
 
@@ -53,8 +55,10 @@ int main(int argc, char *argv[])
 		ControlView();
 		ClearTerminal();
 
-		if (ShouldRenderGameWorld())
+		if (ShouldRenderGameWorld()) {
+			RenderTerrain(0);
 			RenderSprites();
+		}
 
 		RenderViews();
 		BeginDrawing();
