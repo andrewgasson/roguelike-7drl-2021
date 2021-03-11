@@ -20,7 +20,7 @@ set Sources=^
 	%SourcePath%\Raylib\*.c
 
 set Compiler=gcc
-set CompilerFlags=-std=c17 -m64 -DPLATFORM_DESKTOP
+set CompilerFlags=-std=c17 -O2 -m64 -DPLATFORM_DESKTOP
 
 %Compiler%^
 	-o%ExePath%^
