@@ -18,6 +18,8 @@ static struct {
 
 void InitSprites(int capacity)
 {
+	int i;
+
 	if (capacity < 1)
 		capacity = 1;
 
@@ -32,7 +34,12 @@ void InitSprites(int capacity)
 	}
 
 	spriteCapacity = capacity;
-	DestroyAllSprites();
+
+	for (i = 0; i < spriteCapacity; i++) {
+		spriteStatus[i].reserved = false;
+		spriteStatus[i].version = 0;
+	}
+
 	TraceLog(LOG_INFO, TextFormat("SPRITE: Initialized successfully (capacity: %d)", spriteCapacity));
 }
 
