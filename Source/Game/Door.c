@@ -233,7 +233,7 @@ static void CacheActiveDoors(int *outLength, Handle *outHandles[])
 	int i;
 	int j;
 
-	// EXIT: There are no creatures
+	// EXIT: There are no doors
 	if (doorCount == 0) {
 		*outLength = 0;
 		*outHandles = NULL;
