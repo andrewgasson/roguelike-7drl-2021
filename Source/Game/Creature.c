@@ -115,7 +115,7 @@ void DestroyCreature(Handle creature)
 
 	if (IsSpriteValid(creatureData[creature.index].sprite)) {
 		DestroySprite(creatureData[creature.index].sprite);
-		doorData[door.index].sprite = NULL_HANDLE;
+		creatureData[creature.index].sprite = NULL_HANDLE;
 	}
 
 	creatureCount--;
@@ -133,7 +133,7 @@ void DestroyAllCreatures(void)
 
 		if (IsSpriteValid(creatureData[i].sprite)) {
 			DestroySprite(creatureData[i].sprite);
-			doorData[door.index].sprite = NULL_HANDLE;
+			creatureData[i].sprite = NULL_HANDLE;
 		}
 	}
 
