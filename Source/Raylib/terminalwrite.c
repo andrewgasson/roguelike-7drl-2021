@@ -1,6 +1,7 @@
 #include "Raylib/terminalwrite.h"
 
 #include "Raylib/raymath.h"
+#include <stdint.h>
 
 static int terminalCursorX;
 static int terminalCursorY;
@@ -215,30 +216,9 @@ void WriteTerminalLetter(char letter)
 }
 
 // TODO: Break per word for better wrapping
-void WriteTerminalText(const char *text)
+inline void WriteTerminalText(const char *text)
 {
-	const char *letter;
-
-	letter = &text[0];
-
-	// Always move the cursor before breaking the loop
-	do {
-		TerminalTile tile;
-
-		tile.background = ColorAlphaBlend(GetTerminalTile(terminalCursorX, terminalCursorY).background, terminalBackPaint, WHITE);
-		tile.foreground = ColorAlphaBlend(GetTerminalTile(terminalCursorX, terminalCursorY).foreground, terminalForePaint, WHITE);
-
-		if (*letter == '\n' || *letter == '\r') {
-			// BREAK: The cursor hit an edge
-			if (MoveTerminalCursorNextLine())
-				break;
-		} else {
-			tile.symbol = (*letter == '\0') ? ' ' : *letter;
-			SetTerminalTile(terminalCursorX, terminalCursorY, tile);
-		}
-
-		letter++;
-	} while (MoveTerminalCursorNext() && *letter != '\0');
+	return WriteTerminalTextLength(text, INT32_MAX);
 }
 
 // TODO: Break per word for better wrapping
