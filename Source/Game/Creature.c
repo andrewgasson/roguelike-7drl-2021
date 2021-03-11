@@ -41,9 +41,11 @@ void InitCreatures(int capacity)
 
 	creatureCapacity = capacity;
 
-	for (i = 0; i < creatureCapacity; i++)
+	for (i = 0; i < creatureCapacity; i++) {
 		creatureStatus[i].reserved = false;
-	
+		creatureStatus[i].version = 0;
+	}
+
 	for (i = 0; i < creatureCapacity; i++)
 		creatureData[i].sprite = NULL_HANDLE;
 
