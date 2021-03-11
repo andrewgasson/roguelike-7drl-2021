@@ -79,36 +79,7 @@ static void OnRenderView(void)
 	DrawTerminalGuiFrame(framePosX, framePosY, frameWidth, frameHeight, promptTitleText, frameFill, frameOutline, frameOutlineTitle);
 
 	// Layout message
-	if (promptMessageText) {
-		int messageWidth;
-		int messageLength;
-		int messageLineStart;
-		int messageLengthRemainder;
-		int messagePosX;
-		int messagePosY;
-
-		messageWidth = frameWidth - 4;
-		messageLength = strlen(promptMessageText);
-		messageLineStart = 0;
-		messageLengthRemainder = messageLength;
-		messagePosX = framePosX + 2;
-		messagePosY = framePosY + 2;
-		SetTerminalCursorWrap(true, true);
-		SetTerminalCursorXY(messagePosX, messagePosY);
-		SetTerminalWriteBackPaint(frameFill.background);
-		SetTerminalWriteForePaint(frameFill.foreground);
-
-		while (messageLengthRemainder > 0) {
-			int messageLineEnd;
-
-			messageLineEnd = (messageWidth < messageLengthRemainder) ? messageWidth : messageLengthRemainder;
-			SetTerminalCursorXY(messagePosX, GetTerminalCursorY());
-			WriteTerminalTextLength(&promptMessageText[messageLineStart], messageLineEnd);
-			messageLineStart += messageLineEnd;
-			messageLengthRemainder -= messageLineEnd;
-			MoveTerminalCursorNextLine();
-		}
-	}
+	DrawTerminalGuiTextArea(framePosX + 2, framePosY + 2, frameWidth - 4, frameHeight - 5, promptMessageText, ALPHA_BLACK, WHITE);
 
 	// Layout options
 	{
@@ -120,6 +91,6 @@ static void OnRenderView(void)
 		acceptPosX = framePosX + ((frameWidth - acceptLength - 2) / 2);
 		acceptPosY = framePosY + frameHeight - 3;
 		MoveTerminalCursorDown(1);
-		DrawTerminalGuiButton(acceptPosX, acceptPosY, promptAcceptText, acceptLength, GRAY, BLACK);
+		DrawTerminalGuiButton(acceptPosX, acceptPosY, promptAcceptText, acceptLength, WHITE, BLACK);
 	}
 }

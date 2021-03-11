@@ -4,37 +4,6 @@
 #include "Raylib/terminalwrite.h"
 #include <string.h>
 
-typedef struct TerminalWriteSettings {
-	Color backPaint;
-	Color forePaint;
-	bool wrapHorizontal;
-	bool wrapVertical;
-	int cursorX;
-	int cursorY;
-} TerminalWriteSettings;
-
-static TerminalWriteSettings StoreTerminalWriteSettings(void)
-{
-	TerminalWriteSettings result;
-
-	result.backPaint = GetTerminalWriteBackPaint();
-	result.forePaint = GetTerminalWriteForePaint();
-	result.wrapHorizontal = GetTerminalCursorWrapHorizontal();
-	result.wrapVertical = GetTerminalCursorWrapVertical();
-	result.cursorX = GetTerminalCursorX();
-	result.cursorY = GetTerminalCursorY();
-
-	return result;
-}
-
-static void RestoreTerminalWriteSettings(TerminalWriteSettings settings)
-{
-	SetTerminalWriteBackPaint(settings.backPaint);
-	SetTerminalWriteForePaint(settings.forePaint);
-	SetTerminalCursorWrap(settings.wrapHorizontal, settings.wrapVertical);
-	SetTerminalCursorXY(settings.cursorX, settings.cursorY);
-}
-
 void DrawTerminalGuiButton(int x, int y, const char *text, int maxTextLength, Color background, Color foreground)
 {
 	TerminalWriteSettings previousSettings;
@@ -51,7 +20,7 @@ void DrawTerminalGuiButton(int x, int y, const char *text, int maxTextLength, Co
 	// Calculate info
 	textLength = (text) ? strlen(text) : 0;
 	textLength = (textLength > maxTextLength) ? maxTextLength : textLength;
-	width = x + textLength + TERMINAL_GUI_BUTTON_HORIZONTAL_PADDING;
+	width = x + textLength + 2;
 
 	// Write
 	SetTerminalWriteBackPaint(background);
@@ -98,4 +67,45 @@ void DrawTerminalGuiFrame(int x, int y, int width, int height, const char *title
 		// Restore terminal settings
 		RestoreTerminalWriteSettings(previousSettings);
 	}
+}
+
+int DrawTerminalGuiTextArea(int x, int y, int width, int height, const char *text, Color background, Color foreground)
+{
+	int messageLength;
+	int messageWidth;
+
+	messageLength = text ? strlen(text) : 0;
+
+	if (messageLength > 0) {
+		TerminalWriteSettings previousSettings;
+		int messageLineStart;
+		int messageLengthRemainder;
+
+		// Store terminal settings
+		previousSettings = StoreTerminalWriteSettings();
+
+		// Write
+		messageLineStart = 0;
+		messageLengthRemainder = messageLength;
+		SetTerminalCursorWrap(true, true);
+		SetTerminalCursorXY(x, y);
+		SetTerminalWriteBackPaint(background);
+		SetTerminalWriteForePaint(foreground);
+
+		while (messageLengthRemainder > 0) {
+			int messageLineEnd;
+
+			messageLineEnd = (width < messageLengthRemainder) ? width : messageLengthRemainder;
+			SetTerminalCursorXY(x, GetTerminalCursorY());
+			WriteTerminalTextLength(&text[messageLineStart], messageLineEnd);
+			messageLineStart += messageLineEnd;
+			messageLengthRemainder -= messageLineEnd;
+			MoveTerminalCursorNextLine();
+		}
+
+		// Restore terminal settings
+		RestoreTerminalWriteSettings(previousSettings);
+	}
+
+	return 0;
 }

@@ -130,6 +130,8 @@ static void OnRenderView(void)
 	DrawTerminalGuiFrame(framePosX, framePosY, frameWidth, frameHeight, promptTitleText, frameFill, frameOutline, frameOutlineTitle);
 
 	// Layout message
+	DrawTerminalGuiTextArea(framePosX + 2, framePosY + 2, frameWidth - 4, frameHeight - 5, promptMessageText, frameFill.background, frameFill.foreground);
+	/*
 	if (messageLength > 0) {
 		int messageLineStart;
 		int messageLengthRemainder;
@@ -156,6 +158,7 @@ static void OnRenderView(void)
 			MoveTerminalCursorNextLine();
 		}
 	}
+	*/
 
 	// Layout options
 	{

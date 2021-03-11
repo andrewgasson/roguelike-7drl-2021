@@ -60,7 +60,7 @@ static void OnControlView(void)
 			TraceLog(LOG_INFO, "VIEW: MainMenu: Loading new game");
 			break;
 		case MAIN_MENU_CURSOR_HELP:
-			TraceLog(LOG_INFO, "VIEW: MainMenu: Showing help menu");
+			OpenMessagePrompt("Help", "Press button. Bump red \"w\" 'til gone.", "Thanks!");
 			break;
 		case MAIN_MENU_CURSOR_QUIT:
 			OpenQuitPrompt();
