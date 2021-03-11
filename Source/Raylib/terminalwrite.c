@@ -215,13 +215,11 @@ void WriteTerminalLetter(char letter)
 	}
 }
 
-// TODO: Break per word for better wrapping
 inline void WriteTerminalText(const char *text)
 {
 	return WriteTerminalTextLength(text, INT32_MAX);
 }
 
-// TODO: Break per word for better wrapping
 void WriteTerminalTextLength(const char *text, int maxLength)
 {
 	int i;

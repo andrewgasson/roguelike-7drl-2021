@@ -69,6 +69,7 @@ void DrawTerminalGuiFrame(int x, int y, int width, int height, const char *title
 	}
 }
 
+// TODO: Break per word for better wrapping. Also implement proper return behaviour
 int DrawTerminalGuiTextArea(int x, int y, int width, int height, const char *text, Color background, Color foreground)
 {
 	int messageLength;
