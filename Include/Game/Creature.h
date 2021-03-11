@@ -31,6 +31,7 @@ Handle GetCreatureProtagonist(void);
 Handle GetCreatureSprite(Handle creature); // Managed return. Never null.
 int GetCreatureStat(Handle creature, CreatureStat stat);
 bool IsCreatureProtagonist(Handle creature);
+void KillCreature(Handle creature);
 void SetCreaturePosition(Handle creature, Vector2 position);
 void SetCreatureProtagonist(Handle creature);
 void SetCreatureStat(Handle creature, CreatureStat stat, int value);

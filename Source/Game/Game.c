@@ -27,6 +27,11 @@ void SaveGame(const char *fileName)
 	// TODO
 }
 
+void GameOver(void)
+{
+	// TODO
+}
+
 Handle SpawnProtagonist(void)
 {
 	static const TerminalTile playerTile = { .background = ALPHA_BLACK, .foreground = WHITE, .symbol = '@' };

@@ -1,5 +1,6 @@
 #include "Game/Creature.h"
 
+#include "Game/Game.h"
 #include "Game/Sprite.h"
 #include "Raylib/raymath.h"
 #include <stdlib.h> // for NULL
@@ -189,10 +190,12 @@ void CreatureAttack(Handle creature, Compass direction)
 			TraceLog(LOG_INFO, TextFormat("CREATURE: Protagonist dealt %d damage to creature", damage));
 
 		if (health < 0) {
-			if (IsCreatureProtagonist(creature))
-				TraceLog(LOG_INFO, "CREATURE: Protagonist killed a creature!");
+			KillCreature(creature);
 
-			DestroyCreature(obstacle);
+			if (IsCreatureProtagonist(creature)) {
+				TraceLog(LOG_INFO, "CREATURE: Protagonist killed creature");
+				// TODO: Add exp
+			}
 		}
 	}
 }
@@ -279,6 +282,17 @@ inline bool IsCreatureProtagonist(Handle creature)
 {
 	return IsCreatureValid(creatureProtagonist)
 		&& AreHandlesEqual(creature, creatureProtagonist);
+}
+
+void KillCreature(Handle creature)
+{
+	if (IsCreatureProtagonist(creature)) {
+		TraceLog(LOG_INFO, "CREATURE: Protagonist died");
+		GameOver();
+	} else {
+		// TODO: Drop carcass/loot
+		DestroyCreature(creature);
+	}
 }
 
 inline void SetCreaturePosition(Handle creature, Vector2 position)
