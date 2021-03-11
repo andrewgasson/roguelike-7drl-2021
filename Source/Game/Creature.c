@@ -111,8 +111,10 @@ void DestroyCreature(Handle creature)
 {
 	creatureStatus[creature.index].reserved = false;
 
-	if (IsSpriteValid(creatureData[creature.index].sprite))
+	if (IsSpriteValid(creatureData[creature.index].sprite)) {
 		DestroySprite(creatureData[creature.index].sprite);
+		doorData[door.index].sprite = NULL_HANDLE;
+	}
 
 	creatureCount--;
 
@@ -127,8 +129,10 @@ void DestroyAllCreatures(void)
 	for (i = 0; i < creatureCapacity; i++) {
 		creatureStatus[i].reserved = false;
 
-		if (IsSpriteValid(creatureData[i].sprite))
+		if (IsSpriteValid(creatureData[i].sprite)) {
 			DestroySprite(creatureData[i].sprite);
+			doorData[door.index].sprite = NULL_HANDLE;
+		}
 	}
 
 	creatureCount = 0;
