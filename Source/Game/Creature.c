@@ -1,9 +1,10 @@
 #include "Game/Creature.h"
 
 #include "Game/Game.h"
+#include "Game/Prompt.h"
 #include "Game/Sprite.h"
 #include "Raylib/raymath.h"
-#include <stdlib.h> // for NULL
+#include <stdlib.h>
 
 static void CacheActiveCreatures(int *outLength, Handle *outHandles[]);
 
@@ -190,11 +191,12 @@ void CreatureAttack(Handle creature, Compass direction)
 			TraceLog(LOG_INFO, TextFormat("CREATURE: Protagonist dealt %d damage to creature", damage));
 
 		if (health < 0) {
-			KillCreature(creature);
+			KillCreature(obstacle);
 
 			if (IsCreatureProtagonist(creature)) {
 				TraceLog(LOG_INFO, "CREATURE: Protagonist killed creature");
-				// TODO: Add exp
+				SetCreatureStat(creature, CREATURE_STAT_EXPERIENCE, GetCreatureStat(creature, CREATURE_STAT_EXPERIENCE) + 1);
+				UpdateCreatureProtagonistLevel();
 			}
 		}
 	}
@@ -311,6 +313,27 @@ inline void SetCreatureProtagonist(Handle creature)
 inline void SetCreatureStat(Handle creature, CreatureStat stat, int value)
 {
 	creatureData[creature.index].stats[stat] = value;
+}
+
+void UpdateCreatureProtagonistLevel(void)
+{
+	Handle protagonist;
+	int currentLevel;
+	int currentExp;
+	int requiredExp;
+
+	protagonist = GetCreatureProtagonist();
+	currentLevel = GetCreatureStat(protagonist, CREATURE_STAT_LEVEL);
+	currentExp = GetCreatureStat(protagonist, CREATURE_STAT_EXPERIENCE);
+	requiredExp = currentLevel + 1; // TODO: Good enough for now, but will scale poorly
+
+	if (currentExp >= requiredExp) {
+		currentExp -= requiredExp;
+		currentLevel++;
+		SetCreatureStat(protagonist, CREATURE_STAT_LEVEL, currentLevel);
+		SetCreatureStat(protagonist, CREATURE_STAT_EXPERIENCE, currentExp);
+		OpenLevelUpPrompt(currentLevel);
+	}
 }
 
 static void CacheActiveCreatures(int *outLength, Handle *outHandles[])

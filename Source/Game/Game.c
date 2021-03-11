@@ -4,6 +4,7 @@
 #include "Game/Dungeon.h"
 #include "Game/Handle.h"
 #include "Game/Sprite.h"
+#include "Game/View.h"
 #include "Raylib/raylib.h"
 #include "Raylib/terminal.h"
 
@@ -29,7 +30,8 @@ void SaveGame(const char *fileName)
 
 void GameOver(void)
 {
-	// TODO
+	// TODO: Temporary
+	SetView(&VIEW_MAIN_MENU);
 }
 
 Handle SpawnProtagonist(void)
@@ -37,6 +39,7 @@ Handle SpawnProtagonist(void)
 	static const TerminalTile playerTile = { .background = ALPHA_BLACK, .foreground = WHITE, .symbol = '@' };
 	Handle protagonist;
 
+	// Destroy the previous protagonist
 	protagonist = GetCreatureProtagonist();
 
 	if (IsCreatureValid(protagonist))
@@ -50,7 +53,9 @@ Handle SpawnProtagonist(void)
 		return NULL_HANDLE;
 	}
 
+	// Initialize protagonist
 	SetCreatureProtagonist(protagonist);
+	SetCreatureStat(protagonist, CREATURE_STAT_LEVEL, 1);
 	SetSpriteTile(GetCreatureSprite(protagonist), playerTile);
 
 	return protagonist;

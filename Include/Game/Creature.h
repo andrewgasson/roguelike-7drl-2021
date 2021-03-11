@@ -2,6 +2,8 @@
 #define GAME_CREATURE_H
 
 typedef enum {
+	CREATURE_STAT_LEVEL,
+	CREATURE_STAT_EXPERIENCE,
 	CREATURE_STAT_HEALTH,
 	// Size
 	CREATURE_STAT__LENGTH
@@ -35,5 +37,6 @@ void KillCreature(Handle creature);
 void SetCreaturePosition(Handle creature, Vector2 position);
 void SetCreatureProtagonist(Handle creature);
 void SetCreatureStat(Handle creature, CreatureStat stat, int value);
+void UpdateCreatureProtagonistLevel(void);
 
 #endif // GAME_CREATURE_H
