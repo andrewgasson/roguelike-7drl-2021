@@ -247,3 +247,28 @@ void WriteTerminalTextLength(const char *text, int maxLength)
 		i++;
 	} while (MoveTerminalCursorNext() && i < maxLength && text[i] != '\0');
 }
+
+//----------------------------------------------------------------------------------
+// Terminal write save/load state
+//----------------------------------------------------------------------------------
+TerminalWriteSettings StoreTerminalWriteSettings(void)
+{
+	TerminalWriteSettings result;
+
+	result.backPaint = GetTerminalWriteBackPaint();
+	result.forePaint = GetTerminalWriteForePaint();
+	result.wrapHorizontal = GetTerminalCursorWrapHorizontal();
+	result.wrapVertical = GetTerminalCursorWrapVertical();
+	result.cursorX = GetTerminalCursorX();
+	result.cursorY = GetTerminalCursorY();
+
+	return result;
+}
+
+void RestoreTerminalWriteSettings(TerminalWriteSettings settings)
+{
+	SetTerminalWriteBackPaint(settings.backPaint);
+	SetTerminalWriteForePaint(settings.forePaint);
+	SetTerminalCursorWrap(settings.wrapHorizontal, settings.wrapVertical);
+	SetTerminalCursorXY(settings.cursorX, settings.cursorY);
+}

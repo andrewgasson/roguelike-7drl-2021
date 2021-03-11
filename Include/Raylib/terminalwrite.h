@@ -3,6 +3,15 @@
 
 #include "Raylib/terminal.h"
 
+typedef struct TerminalWriteSettings {
+	Color backPaint;
+	Color forePaint;
+	bool wrapHorizontal;
+	bool wrapVertical;
+	int cursorX;
+	int cursorY;
+} TerminalWriteSettings;
+
 //----------------------------------------------------------------------------------
 // Terminal cursor functions
 //----------------------------------------------------------------------------------
@@ -39,5 +48,11 @@ void SetTerminalWriteForePaint(Color forePaint);
 void WriteTerminalLetter(char letter);
 void WriteTerminalText(const char *text);
 void WriteTerminalTextLength(const char *text, int maxLength);
+
+//----------------------------------------------------------------------------------
+// Terminal write save/load state
+//----------------------------------------------------------------------------------
+TerminalWriteSettings StoreTerminalWriteSettings(void);
+void RestoreTerminalWriteSettings(TerminalWriteSettings settings);
 
 #endif // TERMINAL_WRITE_H
