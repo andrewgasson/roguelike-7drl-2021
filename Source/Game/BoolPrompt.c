@@ -42,7 +42,7 @@ static BoolPromptCursor promptSelection;
 
 void OpenBoolPrompt(BoolPromptCallback onAccept, BoolPromptCallback onDecline, const char *titleText, const char *messageText, const char *acceptText, const char *declineText)
 {
-	// CRASH: Only one prompt allowed at a time.
+	// CRASH: Only one prompt allowed at a time
 	if (promptIsOpen) {
 		TraceLog(LOG_ERROR, "PROMPT: BoolPrompt is already open");
 		return;
@@ -102,8 +102,8 @@ static void OnControlView(void)
 static void OnRenderView(void)
 {
 	static const int panelWidth = 40;
-	static const TerminalTile panelFill = { .background = GRAY, .foreground = WHITE, .symbol = ' ' };
-	static const TerminalTile panelOutline = { .background = GRAY, .foreground = WHITE, .symbol = ' ' };
+	static const TerminalTile panelFill = { .background = DARKGRAY, .foreground = WHITE, .symbol = ' ' };
+	static const TerminalTile panelOutline = { .background = DARKGRAY, .foreground = WHITE, .symbol = ' ' };
 	int messageLength;
 	int messageWidth;
 	int messageHeight;
