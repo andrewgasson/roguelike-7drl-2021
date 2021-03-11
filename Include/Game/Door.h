@@ -18,7 +18,6 @@ Handle GetDoorAtPosition(Vector2 position);
 TerminalTile GetDoorClosedTile(Handle door);
 TerminalTile GetDoorOpenedTile(Handle door);
 Vector2 GetDoorPosition(Handle door);
-Handle GetDoorSprite(Handle door); // Managed return. Never null.
 bool IsDoorOpened(Handle door);
 void SetDoorClosedTile(Handle door, TerminalTile closedTile);
 void SetDoorOpened(Handle door, bool opened);

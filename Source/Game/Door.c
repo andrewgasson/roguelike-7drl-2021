@@ -188,11 +188,6 @@ inline Vector2 GetDoorPosition(Handle door)
 	return doorData[door.index].position;
 }
 
-inline Handle GetDoorSprite(Handle door)
-{
-	return doorData[door.index].sprite;
-}
-
 inline void SetDoorClosedTile(Handle door, TerminalTile closedTile)
 {
 	doorData[door.index].closedTile = closedTile;
