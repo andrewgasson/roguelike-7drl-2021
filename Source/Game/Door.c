@@ -250,7 +250,7 @@ static void CacheActiveDoors(int *outLength, Handle *outHandles[])
 			(*outHandles)[j].version = doorStatus[i].version;
 			j++;
 
-			// BREAK: Leave early if we've found all the instances.
+			// BREAK: Leave early if we've found all the instances
 			if (j == doorCount)
 				break;
 		}

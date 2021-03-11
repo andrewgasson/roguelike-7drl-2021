@@ -437,7 +437,7 @@ static void CacheActiveCreatures(int *outLength, Handle *outHandles[])
 			(*outHandles)[j].version = creatureStatus[i].version;
 			j++;
 
-			// BREAK: Leave early if we've found all the instances.
+			// BREAK: Leave early if we've found all the instances
 			if (j == creatureCount)
 				break;
 		}
