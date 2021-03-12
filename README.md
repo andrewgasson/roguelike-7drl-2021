@@ -1,8 +1,10 @@
 # 7DRL 2021
 To check out the 7DRL challenge, go to <https://7drl.com/>, or for the 2021 challenge <https://itch.io/jam/7drl-challenge-2021>.
 
+![Screenshot of the Main Menu](https://github.com/andrewgasson/roguelike-7drl-2021/blob/master/Document/ScreenShot/Day4MainMenu.png)
+
 ## Goal
-Create a simple Roguelike inspired by the the original Rogue and OD&D using Raylib. This will include procedural dungeons, combat, and loot, and if time allows for it, magic, archery, and shops.
+Create a simple Roguelike inspired by the original Rogue and OD&D using Raylib. This will include procedural dungeons, combat, and loot, and if time allows for it, magic, archery, and shops.
 
 ## Log
 ### Day 1 (2021/03/8)
