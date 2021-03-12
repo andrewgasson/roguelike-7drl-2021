@@ -8,12 +8,12 @@ typedef struct ItemPrefabInfo {
 	float weight;
 } ItemPrefabInfo;
 
-static struct ItemPrefab itemPrefabData[ITEM_PREFAB__LENGTH];
+static struct ItemPrefabInfo itemPrefabData[ITEM_PREFAB__LENGTH];
 
 void InitItemPrefabs(void)
 {
 	// Books
-	itemPrefabData[ITEM_PREFAB_MGFN_VAMPIRE_SCROLL] = (ItemPrefabInfo) {
+	itemPrefabData[ITEM_PREFAB_BOOK_VAMPIRE_SCROLL] = (ItemPrefabInfo) {
 		.type = ITEM_PREFAB_BOOK_VAMPIRE_SCROLL,
 		.name = "The Vampire Scroll",
 		.description = "A scroll made of an unknown material with pearlescent text. Ancient, yet pristine.",
