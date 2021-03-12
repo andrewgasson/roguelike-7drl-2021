@@ -42,7 +42,7 @@ bool IsInputActive(Input input)
 void LoadDefaultInputConfig(void)
 {
 	inputPulseMinDownTime = 0.33L;
-	inputPulseCooldown = 0.0745L;
+	inputPulseCooldown = 0.065L;
 
 	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.primaryKey = KEY_UP;
 	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.secondaryKey = KEY_W;
