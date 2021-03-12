@@ -196,7 +196,7 @@ static void OnRenderView(void)
 		WriteTerminalText("7DRL 2021");
 
 		SetTerminalCursorXY(GetTerminalWidth() - 14, GetTerminalCursorY() + 1);
-		WriteTerminalText("VERSION 0.4.0");
+		WriteTerminalText("VERSION 0.5.0");
 
 		SetTerminalCursorXY(GetTerminalWidth() - 25, GetTerminalCursorY() + 1);
 		WriteTerminalText("CREATED BY ANDREW GASSON");

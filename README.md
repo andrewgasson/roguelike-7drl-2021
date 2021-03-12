@@ -18,3 +18,6 @@ The objective of the day was to finish implementing the terminal draw functions 
 
 ### Day 4 (2021/03/11)
 The objective of the day was to implement the message prompt, and expand the dungeon generator. This was mostly achieved. The prompts are complete (though text area doesn't wrap single words to the next line), and the process of adding the features necessary for the dungeon have begun (so far, terrain and doors). The protagonist can now also gain experience and level up.
+
+### Day 5 (2021/03/12)
+The objective of the day was to continue implementing features for the dungeon. This was achieved. Now items, inventories, and containers exist. Additionally, sprites now render based on a their layer, and subsequent layer's priority. This fixed the issue where the door was rendered above the player. A new main menu design was also added, which decided the game's theme: vampires.
