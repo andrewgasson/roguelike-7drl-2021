@@ -1,14 +1,23 @@
 #include "Game/Main.h"
 
+#include "Game/Container.h"
 #include "Game/Creature.h"
 #include "Game/Door.h"
 #include "Game/Game.h"
 #include "Game/Input.h"
+#include "Game/Inventory.h"
+#include "Game/Item.h"
 #include "Game/Sprite.h"
 #include "Game/Terrain.h"
 #include "Game/View.h"
 #include "Raylib/raylib.h"
 #include "Raylib/terminal.h"
+
+#define CONTAINER_CAPACITY 32
+#define CREATURE_CAPACITY 16
+#define DOOR_CAPACITY 16
+#define INVENTORY_CAPACITY (CREATURE_CAPACITY * CONTAINER_CAPACITY)
+#define SPRITE_CAPACITY (CREATURE_CAPACITY * CONTAINER_CAPACITY * DOOR_CAPACITY)
 
 static bool appRunning;
 
@@ -44,9 +53,12 @@ int main(int argc, char *argv[])
 	// Initialize modules
 	InitInput();
 	InitTerrain(GetTerminalWidth(), GetTerminalHeight(), 1);
-	InitSprites(32);
-	InitDoors(16);
-	InitCreatures(16);
+	InitItemPrefabs();
+	InitSprites(SPRITE_CAPACITY);
+	InitInventories(INVENTORY_CAPACITY);
+	InitContainers(CONTAINER_CAPACITY);
+	InitDoors(DOOR_CAPACITY);
+	InitCreatures(CREATURE_CAPACITY);
 
 	// Start engine loop
 	SetView(&VIEW_MAIN_MENU);
