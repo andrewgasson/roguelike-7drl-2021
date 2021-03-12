@@ -3,10 +3,12 @@
 
 typedef enum ItemType {
 	ITEM_TYPE_BOOK,
-	ITEM_TYPE_WEAPON
+	ITEM_TYPE_WEAPON,
+	ITEM_TYPE_MISC
 } ItemType;
 
 typedef enum ItemPrefab {
+	ITEM_PREFAB_NONE,
 	// Books
 	ITEM_PREFAB_BOOK_VAMPIRE_SCROLL,
 	// Weapons
