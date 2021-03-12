@@ -1,11 +1,13 @@
 #include "Game/View.h"
 
+#include "Game/Input.h"
 #include "Game/Main.h"
 #include "Game/Prompt.h"
 #include "Raylib/terminal.h"
 #include "Raylib/terminaldraw.h"
 #include "Raylib/terminalwrite.h"
-#include <stdlib.h> // for NULL
+#include <stdlib.h>
+#include <stdint.h>
 
 static void OnOpenView(void);
 static void OnCloseView(void);
@@ -20,6 +22,8 @@ const View VIEW_DEV_SANDBOX = {
 	.requireGameWorldRender = false
 };
 
+static char sandboxChar = 1;
+
 static void OnOpenView(void)
 {
 	// Do nothing
@@ -32,10 +36,20 @@ static void OnCloseView(void)
 
 static void OnControlView(void)
 {
-	// Do nothing
+	if (IsInputActive(INPUT_UI_LEFT)) {
+		sandboxChar--;
+	} else if (IsInputActive(INPUT_UI_RIGHT)) {
+		sandboxChar++;
+	}
 }
 
 static void OnRenderView(void)
 {
-	// Do nothing
+	SetTerminalWriteForePaint(WHITE);
+	SetTerminalCursorXY(0, 0);
+	WriteTerminalLetter(sandboxChar);
+	MoveTerminalCursorNextLine();
+	WriteTerminalText(TextFormat("Dec: %d", sandboxChar));
+	MoveTerminalCursorNextLine();
+	WriteTerminalText(TextFormat("Hex: %x", sandboxChar & 0xFF));
 }
