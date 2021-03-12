@@ -27,4 +27,4 @@ int GetItemPrice(ItemPrefab item);
 ItemType GetItemType(ItemPrefab item);
 float GetItemWeight(ItemPrefab item);
 
-#endif GAME_ITEM_H
+#endif // GAME_ITEM_H
