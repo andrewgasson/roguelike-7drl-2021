@@ -100,7 +100,8 @@ Handle SpawnDoor(void)
 				return NULL_HANDLE;
 			}
 
-			// Prepare instance #2: update handle information
+			// Prepare instance (continued)
+			SetSpriteLayer(doorData[i].sprite, SPRITE_LAYER_DOOR);
 			SetSpriteTile(doorData[i].sprite, (doorData[i].opened) ? doorData[i].openedTile : doorData[i].closedTile);
 
 			return handle;
