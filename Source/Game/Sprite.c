@@ -1,11 +1,15 @@
 #include "Game/Sprite.h"
 
 #include "Raylib/raymath.h"
-#include <stdlib.h> // for NULL
+#include <stdlib.h>
 
 static int spriteCapacity;
 static int spriteCount;
 static int spriteLowestFree;
+static struct {
+	bool enabled;
+	int priority;
+} spriteLayerData[SPRITE_LAYER__LENGTH];
 static struct {
 	bool reserved;
 	unsigned int version;
@@ -13,6 +17,7 @@ static struct {
 static struct {
 	bool enabled;
 	Vector2 position;
+	SpriteLayer layer;
 	TerminalTile tile;
 } *spriteData;
 
@@ -40,6 +45,7 @@ void InitSprites(int capacity)
 		spriteStatus[i].version = 0;
 	}
 
+	LoadDefaultSpriteLayers();
 	TraceLog(LOG_INFO, TextFormat("SPRITE: Initialized successfully (capacity: %d)", spriteCapacity));
 }
 
@@ -79,6 +85,7 @@ Handle SpawnSprite(void)
 			spriteData[i].enabled = true;
 			spriteData[i].position.x = 0;
 			spriteData[i].position.y = 0;
+			spriteData[i].layer = SPRITE_LAYER_CREATURE;
 			spriteData[i].tile.background = ALPHA_BLACK;
 			spriteData[i].tile.foreground = DARKGRAY;
 			spriteData[i].tile.symbol = '?';
@@ -120,6 +127,11 @@ inline bool GetSpriteEnabled(Handle sprite)
 	return spriteData[sprite.index].enabled;
 }
 
+inline SpriteLayer GetSpriteLayer(Handle sprite)
+{
+	return spriteData[sprite.index].layer;
+}
+
 inline Vector2 GetSpritePosition(Handle sprite)
 {
 	return spriteData[sprite.index].position;
@@ -135,6 +147,11 @@ inline void SetSpriteEnabled(Handle sprite, bool enabled)
 	spriteData[sprite.index].enabled = enabled;
 }
 
+inline void SetSpriteLayer(Handle sprite, SpriteLayer layer)
+{
+	spriteData[sprite.index].layer = layer;
+}
+
 inline void SetSpritePosition(Handle sprite, Vector2 position)
 {
 	spriteData[sprite.index].position = position;
@@ -145,12 +162,50 @@ inline void SetSpriteTile(Handle sprite, TerminalTile tile)
 	spriteData[sprite.index].tile = tile;
 }
 
+inline int GetSpriteLayerPriority(SpriteLayer spriteLayer)
+{
+	return spriteLayerData[spriteLayer].priority;
+}
+
+inline bool IsSpriteLayerEnabled(SpriteLayer spriteLayer)
+{
+	return spriteLayerData[spriteLayer].enabled;
+}
+
+void LoadDefaultSpriteLayers(void)
+{
+	spriteLayerData[SPRITE_LAYER_CONTAINER].enabled = true;
+	spriteLayerData[SPRITE_LAYER_CONTAINER].priority = 90;
+
+	spriteLayerData[SPRITE_LAYER_CREATURE].enabled = true;
+	spriteLayerData[SPRITE_LAYER_CREATURE].priority = 80;
+
+	spriteLayerData[SPRITE_LAYER_DOOR].enabled = true;
+	spriteLayerData[SPRITE_LAYER_DOOR].priority = 10;
+
+	spriteLayerData[SPRITE_LAYER_PROTAGONIST].enabled = true;
+	spriteLayerData[SPRITE_LAYER_PROTAGONIST].priority = 100;
+}
+
+inline void SetSpriteLayerEnabled(SpriteLayer spriteLayer, bool enabled)
+{
+	spriteLayerData[spriteLayer].enabled = enabled;
+}
+
+inline void SetSpriteLayerPriority(SpriteLayer spriteLayer, int priority)
+{
+	spriteLayerData[spriteLayer].priority = priority;
+}
+
 void RenderSprites(void)
 {
 	int i;
 	int j;
 	int cacheLength;
-	Handle *cache;
+	struct {
+		Handle current;
+		Handle temporary;
+	} *cache;
 
 	cacheLength = spriteCount;
 	cache = MemAlloc(spriteCount * sizeof(*cache));
@@ -164,8 +219,8 @@ void RenderSprites(void)
 	// Cache active
 	for (j = 0, i = 0; i < spriteCapacity; i++) {
 		if (spriteStatus[i].reserved) {
-			cache[j].index = i;
-			cache[j].version = spriteStatus[i].version;
+			cache[j].current.index = i;
+			cache[j].current.version = spriteStatus[i].version;
 			j++;
 
 			// BREAK: Leave when we have found all active instances
@@ -176,10 +231,10 @@ void RenderSprites(void)
 
 	cacheLength = j;
 
-	// Cull disabled
+	// Cull disabled and sprites whose sprite layer is disabled
 	for (j = 0, i = 0; i < cacheLength; i++) {
-		if (spriteData[i].enabled) {
-			cache[i] = cache[j];
+		if (spriteData[i].enabled && spriteLayerData[spriteData[i].layer].enabled) {
+			cache[i].current = cache[j].current;
 			j++;
 		}
 	}
@@ -189,14 +244,84 @@ void RenderSprites(void)
 	// Cull out of bounds
 	for (j = 0, i = 0; i < cacheLength; i++) {
 		if (IsWithinTerminalV(spriteData[i].position)) {
-			cache[j] = cache[i];
+			cache[j].current = cache[i].current;
 			j++;
 		}
 	}
 
 	cacheLength = j;
 
+	// Sort by layer (counting algorithm)
+	{
+		int layerCount[SPRITE_LAYER__LENGTH];
+		int layerIndexStart[SPRITE_LAYER__LENGTH];
+		SpriteLayer sortedLayers[SPRITE_LAYER__LENGTH];
+
+		// Reset layer counts
+		for (i = 0; i < SPRITE_LAYER__LENGTH; i++) {
+			layerCount[i] = 0;
+			layerIndexStart[i] = 0;
+			sortedLayers[i] = i;
+		}
+
+		// Count the occurences of each layer
+		for (i = 0; i < cacheLength; i++) {
+			int currentIndex;
+			SpriteLayer currentLayer;
+
+			currentIndex = cache[i].current.index;
+			currentLayer = spriteData[currentIndex].layer;
+			layerCount[currentLayer]++;
+		}
+
+		// Sort layers by priority (insertion sort)
+		{
+			SpriteLayer currentLayer;
+            
+			for (i = 1; i < SPRITE_LAYER__LENGTH; i++) {
+				currentLayer = sortedLayers[i];
+				j = i - 1;
+
+				while (j >= 0 && spriteLayerData[sortedLayers[j]].priority > spriteLayerData[currentLayer].priority) {
+					sortedLayers[j + 1] = sortedLayers[j];
+					j = j - 1;
+				}
+
+				sortedLayers[j + 1] = currentLayer;
+			}
+		}
+
+		// Obtain starting index positions for each layer
+		layerIndexStart[sortedLayers[0]] = 0;
+		j = 0;
+
+		for (i = 1; i < SPRITE_LAYER__LENGTH; i++) {
+			j += layerCount[sortedLayers[i - 1]];
+			layerIndexStart[sortedLayers[i]] = j;
+		}
+
+		// Merge-sort current cache into temporary cache. Use layer 
+		// start index as an incrementer for that layers position, 
+		// which after all our loops, we are safe to assume will not 
+		// go out of bounds
+		for (i = 0; i < cacheLength; i++) {
+			int currentIndex;
+			int targetIndex;
+			SpriteLayer currentLayer;
+
+			currentIndex = cache[i].current.index;
+			currentLayer = spriteData[currentIndex].layer;
+			targetIndex = layerIndexStart[currentLayer];
+			cache[targetIndex].temporary = cache[i].current;
+			layerIndexStart[currentLayer]++;
+		}
+
+		// Merge the temporary cache into the current cache
+		for (i = 0; i < cacheLength; i++)
+			cache[i].current = cache[i].temporary;
+	}
+
 	// Render to terminal
 	for (i = 0; i < cacheLength; i++)
-		SetTerminalTileV(spriteData[cache[i].index].position, spriteData[cache[i].index].tile);
+		SetTerminalTileV(spriteData[cache[i].current.index].position, spriteData[cache[i].current.index].tile);
 }
