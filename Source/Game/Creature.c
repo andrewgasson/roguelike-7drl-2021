@@ -100,8 +100,11 @@ Handle SpawnCreature(void)
 				return NULL_HANDLE;
 			}
 
+			// Prepare instance (continued)
 			for (j = 0; j < CREATURE_STAT__LENGTH; j++)
 				creatureData[i].stats[j] = 0;
+
+			SetSpriteLayer(creatureData[i].sprite, SPRITE_LAYER_CREATURE);
 
 			return handle;
 		}
@@ -381,7 +384,13 @@ inline void SetCreaturePosition(Handle creature, Vector2 position)
 
 inline void SetCreatureProtagonist(Handle creature)
 {
+	if (IsCreatureValid(creatureProtagonist))
+		SetSpriteLayer(creatureData[creatureProtagonist.index].sprite, SPRITE_LAYER_CREATURE);
+
 	creatureProtagonist = creature;
+
+	if (IsCreatureValid(creature))
+		SetSpriteLayer(creatureData[creature.index].sprite, SPRITE_LAYER_PROTAGONIST);
 }
 
 inline void SetCreatureStat(Handle creature, CreatureStat stat, int value)
