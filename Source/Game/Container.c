@@ -132,16 +132,19 @@ Handle SpawnContainer(ContainerType containerType)
 				containerData[i].value.carcass.decayDuration = 30;
 				containerData[i].value.carcass.butcheredTile = (TerminalTile) { .background = ALPHA_BLACK, .foreground = RED, .symbol = '&' };
 				containerData[i].value.carcass.tile = (TerminalTile) { .background = ALPHA_BLACK, .foreground = WHITE, .symbol = '%' };
+				SetSpriteTile(containerData[i].sprite, containerData[i].value.carcass.tile);
 				break;
 			case CONTAINER_TYPE_CHEST:
 				containerData[i].value.chest.opened = false;
 				containerData[i].value.chest.closedTile = (TerminalTile) { .background = ALPHA_BLACK, .foreground = BROWN, .symbol = '=' };
 				containerData[i].value.chest.openedTile = (TerminalTile) { .background = ALPHA_BLACK, .foreground = BROWN, .symbol = '-' };
+				SetSpriteTile(containerData[i].sprite, containerData[i].value.chest.closedTile);
 				break;
 			case CONTAINER_TYPE_LOOT:
 				containerData[i].value.loot.decayTime = 0;
 				containerData[i].value.loot.decayDuration = 0;
 				containerData[i].value.loot.tile = (TerminalTile) { .background = ALPHA_BLACK, .foreground = GOLD, .symbol = '$' };
+				SetSpriteTile(containerData[i].sprite, containerData[i].value.loot.tile);
 				break;
 			default:
 				// CRASH: Implementation failure
