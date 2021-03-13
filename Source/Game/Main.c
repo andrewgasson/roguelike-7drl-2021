@@ -1,5 +1,6 @@
 #include "Game/Main.h"
 
+#include "Game/Actor.h"
 #include "Game/Container.h"
 #include "Game/Creature.h"
 #include "Game/Door.h"
@@ -16,6 +17,7 @@
 #define CONTAINER_CAPACITY 32
 #define CREATURE_CAPACITY 16
 #define DOOR_CAPACITY 16
+#define ACTOR_CAPACITY (CREATURE_CAPACITY * CONTAINER_CAPACITY)
 #define INVENTORY_CAPACITY (CREATURE_CAPACITY * CONTAINER_CAPACITY)
 #define SPRITE_CAPACITY (CREATURE_CAPACITY * CONTAINER_CAPACITY * DOOR_CAPACITY)
 
@@ -50,15 +52,18 @@ int main(int argc, char *argv[])
 		ClearBackground(BLACK);
 	EndDrawing();
 
-	// Initialize modules
+	// Initialize modules (order matters only in regards to memory locality, 
+	// otherwise, because modules are relational, they do not depend on 
+	// each other for initialization)
 	InitInput();
 	InitTerrain(GetTerminalWidth(), GetTerminalHeight(), 1);
 	InitItemPrefabs();
-	InitSprites(SPRITE_CAPACITY);
-	InitInventories(INVENTORY_CAPACITY);
+	InitActors(ACTOR_CAPACITY);
 	InitContainers(CONTAINER_CAPACITY);
-	InitDoors(DOOR_CAPACITY);
 	InitCreatures(CREATURE_CAPACITY);
+	InitDoors(DOOR_CAPACITY);
+	InitInventories(INVENTORY_CAPACITY);
+	InitSprites(SPRITE_CAPACITY);
 
 	// Start engine loop
 	SetView(&VIEW_MAIN_MENU);
@@ -68,6 +73,14 @@ int main(int argc, char *argv[])
 		UpdateInput();
 		ControlView();
 		ClearTerminal();
+
+		if (ShouldProcessGameActors()) {
+			// TODO: Any view that requests a pause turn process should be a block (sort of the opposite of world render)
+			// If it is the player's turn, skip,
+			// else if there are no actors to process, process
+			// the round
+			// else process up to the maximum actors
+		}
 
 		if (ShouldRenderGameWorld()) {
 			RenderTerrain(0);
@@ -81,6 +94,8 @@ int main(int argc, char *argv[])
 		EndDrawing();
 	}
 
+	// Let the platform cleanup, yet ensure at least the window or app 
+	// instance is closed
 	CloseWindow();
 	return 0;
 }
