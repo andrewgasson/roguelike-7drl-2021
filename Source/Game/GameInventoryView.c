@@ -41,15 +41,24 @@ static void OnControlView(void)
 
 static void OnRenderView(void)
 {
+	static const int framePaddingLeft = 2;
+	static const int framePaddingTop = 2;
+	static const TerminalTile frameFill = { .background = BLACK, .foreground = WHITE, .symbol = ' ' };
+	static const TerminalTile frameOutline = { .foreground = DARKGRAY, .symbol = 203 };
+	static const TerminalTile frameTitleTile = { .background = GRAY, .foreground = BLACK };
 	int i;
 	Handle inventory;
 
 	inventory = GetCreatureInventory(GetCreatureProtagonist());
 
+	// Draw frame
+	DrawTerminalGuiFrame(0, 0, GetTerminalWidth(), GetTerminalHeight(), "Inventory", frameFill, frameOutline, frameTitleTile);
+
+	// Draw items
 	SetTerminalCursorWrap(false, false);
 	SetTerminalCursorXY(0, 0);
 	SetTerminalWriteBackPaint(BLACK);
-	SetTerminalWriteForePaint(WHITE);
+	
 
 	for (i = 0; i < MAX_INVENTORY_ITEM_QUANTITY; i++) {
 		ItemPrefab item;
@@ -57,11 +66,12 @@ static void OnRenderView(void)
 		item = GetInventoryItemAtIndex(inventory, i);
 
 		if (item != ITEM_PREFAB_NONE) {
-			WriteTerminalText(GetItemName(item));
-			MoveTerminalCursorNextLine();
+			SetTerminalCursorXY(framePaddingLeft, GetTerminalCursorY() + framePaddingTop);
+			SetTerminalWriteForePaint(WHITE);
+			WriteTerminalText(TextFormat("%s (%d gp) (%.2f kg)", GetItemName(item), GetItemPrice(item), GetItemWeight(item)));
+			SetTerminalWriteForePaint(GRAY);
+			SetTerminalCursorXY(framePaddingLeft, GetTerminalCursorY() + 1);
 			WriteTerminalText(GetItemDescription(item));
-			MoveTerminalCursorNextLine();
-			MoveTerminalCursorNextLine();
 		}
 	}
 }
