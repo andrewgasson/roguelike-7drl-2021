@@ -8,6 +8,7 @@ typedef enum ContainerType {
 } ContainerType;
 
 #include "Game/Handle.h"
+#include "Raylib/raylib.h"
 #include "Raylib/terminal.h"
 
 void InitContainers(int capacity);
@@ -19,6 +20,7 @@ void DestroyContainer(Handle container);
 void DestroyAllContainers(void);
 int CountContainers(void);
 
+Handle GetContainerAtPosition(Vector2 position);
 Handle GetContainerInventory(Handle container);
 Vector2 GetContainerPosition(Handle container);
 ContainerType GetContainerType(Handle container);

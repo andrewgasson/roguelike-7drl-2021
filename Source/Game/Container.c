@@ -2,6 +2,9 @@
 
 #include "Game/Inventory.h"
 #include "Game/Sprite.h"
+#include <stdlib.h>
+
+static void CacheActiveContainers(int *outLength, Handle *outHandles[]);
 
 static int containerCapacity;
 static int containerCount;
@@ -208,6 +211,32 @@ inline int CountContainers(void)
 	return containerCount;
 }
 
+Handle GetContainerAtPosition(Vector2 position)
+{
+	int i;
+	int length;
+	Handle found;
+	Handle *cache;
+
+	CacheActiveContainers(&length, &cache);
+
+	if (!cache)
+		return NULL_HANDLE;
+
+	found = NULL_HANDLE;
+
+	for (i = 0; i < length; i++) {
+		if (containerData[cache[i].index].position.x == position.x
+		 && containerData[cache[i].index].position.y == position.y) {
+			found = cache[i];
+			break;
+		}
+	}
+
+	MemFree(cache);
+	return found;
+}
+
 inline Handle GetContainerInventory(Handle container)
 {
 	return containerData[container.index].inventory;
@@ -369,4 +398,40 @@ inline void SetLootContainerTile(Handle lootContainer, TerminalTile tile)
 void RemoveDecayedContainers(void)
 {
 	// TODO: Cache active
+}
+
+static void CacheActiveContainers(int *outLength, Handle *outHandles[])
+{
+	int i;
+	int j;
+
+	// EXIT: There are no containers
+	if (containerCount == 0) {
+		*outLength = 0;
+		*outHandles = NULL;
+		return;
+	}
+
+	*outLength = 0;
+	*outHandles = MemAlloc(containerCount * sizeof(**outHandles));
+
+	// CRASH: Allocation failure
+	if (!*outHandles) {
+		TraceLog(LOG_ERROR, TextFormat("CONTAINER: Failed to allocate cache (size: %d)", containerCount));
+		return;
+	}
+
+	for (j = 0, i = 0; i < containerCapacity; i++) {
+		if (containerStatus[i].reserved) {
+			(*outHandles)[j].index = i;
+			(*outHandles)[j].version = containerStatus[i].version;
+			j++;
+
+			// BREAK: Leave early if we've found all the instances
+			if (j == containerCount)
+				break;
+		}
+	}
+
+	*outLength = j;
 }
