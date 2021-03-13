@@ -19,6 +19,7 @@ int CountInventories(void);
 int AddInventoryItem(Handle inventory, ItemPrefab itemPrefab, int quantity);    // Returns the amount of prefabs added
 int CountAllInventoryItems(Handle inventory);
 int CountInventoryItem(Handle inventory, ItemPrefab itemPrefab);
+ItemPrefab GetInventoryItemAtIndex(Handle inventory, int index);
 int GetTotalInventoryPrice(Handle inventory);
 float GetTotalInventoryWeight(Handle inventory);
 bool IsInventoryEmpty(Handle inventory);

@@ -155,6 +155,11 @@ int CountInventoryItem(Handle inventory, ItemPrefab itemPrefab)
 	return sum;
 }
 
+inline ItemPrefab GetInventoryItemAtIndex(Handle inventory, int index)
+{
+	return inventoryData[inventory.index].items[index];
+}
+
 int GetTotalInventoryPrice(Handle inventory)
 {
 	int i;
