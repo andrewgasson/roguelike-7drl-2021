@@ -1,8 +1,11 @@
 #include "Game/Dungeon.h"
 
+#include "Game/Container.h"
 #include "Game/Creature.h"
 #include "Game/Door.h"
 #include "Game/Handle.h"
+#include "Game/Inventory.h"
+#include "Game/Item.h"
 #include "Game/Sprite.h"
 #include "Raylib/terminal.h"
 
@@ -47,8 +50,21 @@ void GenerateBasicDungeon(void)
 	
 		door = SpawnDoor();
 		doorPosition = GetCreaturePosition(GetCreatureProtagonist());
-		doorPosition.y--;
+		doorPosition.y -= 2;
 		SetDoorPosition(door, doorPosition);
+	}
+
+	// Spawn container with item (DEMO)
+	{
+		Handle container;
+		Vector2 containerPosition;
+
+		container = SpawnContainer(CONTAINER_TYPE_LOOT);
+		containerPosition = GetCreaturePosition(GetCreatureProtagonist());
+		containerPosition.x += 2;
+		containerPosition.y += 1;
+		SetContainerPosition(container, containerPosition);
+		AddInventoryItem(GetContainerInventory(container), ITEM_PREFAB_WEAP_IRON_LONGSWORD, 1);
 	}
 }
 
