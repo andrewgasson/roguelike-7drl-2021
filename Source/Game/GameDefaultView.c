@@ -32,6 +32,8 @@ static void OnControlView(void)
 {
 	if (IsInputActive(INPUT_UI_TOGGLE_INVENTORY))
 		PushView(&VIEW_GAME_INVENTORY);
+	else if (IsInputActive(INPUT_GAME_FLOOR_PICK_UP))
+		CreaturePickUpFloorItem(GetCreatureProtagonist(), 0);
 	else if (IsInputActive(INPUT_GAME_WALK_NORTH))
 		CreatureWalkOrInteract(GetCreatureProtagonist(), COMPASS_NORTH);
 	else if (IsInputActive(INPUT_GAME_WALK_EAST))
