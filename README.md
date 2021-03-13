@@ -2,6 +2,7 @@
 To check out the 7DRL challenge, go to <https://7drl.com/>, or for the 2021 challenge <https://itch.io/jam/7drl-challenge-2021>.
 
 ![Screenshot of the Main Menu](https://github.com/andrewgasson/roguelike-7drl-2021/blob/main/Document/Screenshot/Day4MainMenu.png)
+![Screenshot of the Game](https://github.com/andrewgasson/roguelike-7drl-2021/blob/main/Document/Screenshot/Day6Game.png)
 
 ## Goal
 Create a simple Roguelike inspired by the original Rogue and OD&D using Raylib. This will include procedural dungeons, combat, and loot, and if time allows for it, magic, archery, and shops.
@@ -21,3 +22,14 @@ The objective of the day was to implement the message prompt, and expand the dun
 
 ### Day 5 (2021/03/12)
 The objective of the day was to continue implementing features for the dungeon. This was achieved. Now items, inventories, and containers exist. Additionally, sprites now render based on a their layer, and subsequent layer's priority. This fixed the issue where the door was rendered above the player. A new main menu design was also added, which decided the game's theme: vampires.
+
+### Day 6 (2021/03/13)
+The objective of the day was to get as much gameplay in as possible. Unfortunately, this was not achieved. Added the ability to pick up items, which are shown in a new inventory view, fixed up bugs with input, and started work on the actor module (turn-based system), but this did not get finished. This game still compiles, but there's no real improvement over the last day.
+
+### Day 7 (2021/03/14)
+Because the challenge was started fairly early in the day, there is no time to make any real improvements, so this day was skipped.
+
+## Lesson
+The real aim of this project was to see how useful, and what problems I would face, using a relation, static memory pool, inline function as namespace, collection-oriented architecture. Surprisingly, I think it scales quite well. It's especially easy, for example, to add behaviours to the creature once modules are set up and their API deicded. The downfall is that modules take some extra thinking since you need to worry about an entire collection's behaviour, rather than just the single instance. Overkill for a 7DRL (at least when starting entirely from scratch), but definitely useful for larger projects.
+
+A lot more progress was made this year than the previous year. I believe that a year focused on finalising common modules means that a much larger Roguelike could come together quickly within the 7 days. GUI utility functions would be especially useful.
