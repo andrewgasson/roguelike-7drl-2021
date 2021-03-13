@@ -40,7 +40,8 @@ const View VIEW_MAIN_MENU = {
 	.Close = OnCloseView,
 	.Control = OnControlView,
 	.Render = OnRenderView,
-	.requireGameWorldRender = false
+	.disableGameActorProcess = true,
+	.disableGameWorldRender = true
 };
 
 static MainMenuCursor mainMenuCursor;

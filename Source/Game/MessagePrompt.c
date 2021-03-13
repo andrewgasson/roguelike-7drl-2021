@@ -20,7 +20,8 @@ static const View MESSAGE_PROMPT_VIEW = {
 	.Close = OnCloseView,
 	.Control = OnControlView,
 	.Render = OnRenderView,
-	.requireGameWorldRender = false
+	.disableGameActorProcess = true,
+	.disableGameWorldRender = false
 };
 
 static bool promptIsOpen;

@@ -19,7 +19,8 @@ const View VIEW_DEV_SANDBOX = {
 	.Close = OnCloseView,
 	.Control = OnControlView,
 	.Render = OnRenderView,
-	.requireGameWorldRender = false
+	.disableGameActorProcess = true,
+	.disableGameWorldRender = true
 };
 
 static char sandboxChar = 1;

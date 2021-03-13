@@ -27,7 +27,8 @@ const View VIEW_GAME_PAUSED = {
 	.Close = OnCloseView,
 	.Control = OnControlView,
 	.Render = OnRenderView,
-	.requireGameWorldRender = true
+	.disableGameActorProcess = true,
+	.disableGameWorldRender = false
 };
 
 static PausedGameCursor pausedGameCursor;

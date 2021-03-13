@@ -8,7 +8,8 @@ typedef struct View {
 	void (*Close)(void);
 	void (*Control)(void);
 	void (*Render)(void);
-	bool requireGameWorldRender;
+	bool disableGameActorProcess;
+	bool disableGameWorldRender;
 } View;
 
 const View *PeekView(void);
@@ -19,6 +20,7 @@ void SetView(const View *view);
 bool IsViewOpen(const View *view);
 int CountViews(void);
 int MaxViews(void);
+bool ShouldProcessGameActors(void);
 bool ShouldRenderGameWorld(void);
 void ControlView(void);
 void RenderViews(void);

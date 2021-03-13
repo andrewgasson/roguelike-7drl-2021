@@ -15,7 +15,8 @@ const View VIEW_GAME_DEFAULT = {
 	.Close = OnCloseView,
 	.Control = OnControlView,
 	.Render = OnRenderView,
-	.requireGameWorldRender = true
+	.disableGameActorProcess = false,
+	.disableGameWorldRender = false
 };
 
 static void OnOpenView(void)

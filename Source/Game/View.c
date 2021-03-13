@@ -93,6 +93,21 @@ inline int MaxViews(void)
 	return MAX_VIEW_COUNT;
 }
 
+bool ShouldProcessGameActors(void)
+{
+	int i;
+
+	if (viewCount == 0)
+		return true;
+
+	for (i = 0; i < viewCount; i++) {
+		if (activeViews[i]->disableGameActorProcess)
+			return false;
+	}
+
+	return true;
+}
+
 bool ShouldRenderGameWorld(void)
 {
 	int i;
@@ -101,11 +116,11 @@ bool ShouldRenderGameWorld(void)
 		return true;
 
 	for (i = 0; i < viewCount; i++) {
-		if (activeViews[i]->requireGameWorldRender)
-			return true;
+		if (activeViews[i]->disableGameWorldRender)
+			return false;
 	}
 
-	return false;
+	return true;
 }
 
 void ControlView(void)
