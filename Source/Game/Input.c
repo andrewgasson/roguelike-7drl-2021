@@ -44,6 +44,13 @@ void LoadDefaultInputConfig(void)
 	inputPulseMinDownTime = 0.33L;
 	inputPulseCooldown = 0.065L;
 
+	inputInfo[INPUT_GAME_FLOOR_PICK_UP].bindInfo.primaryKey = KEY_SPACE;
+	inputInfo[INPUT_GAME_FLOOR_PICK_UP].bindInfo.secondaryKey = 0;
+	inputInfo[INPUT_GAME_FLOOR_PICK_UP].bindInfo.state = INPUT_KEY_STATE_PRESSED;
+	inputInfo[INPUT_GAME_FLOOR_PICK_UP].bindInfo.holdAlt = false;
+	inputInfo[INPUT_GAME_FLOOR_PICK_UP].bindInfo.holdControl = false;
+	inputInfo[INPUT_GAME_FLOOR_PICK_UP].bindInfo.holdShift = false;
+
 	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.primaryKey = KEY_UP;
 	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.secondaryKey = KEY_W;
 	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.state = INPUT_KEY_STATE_DOWN_PULSE;

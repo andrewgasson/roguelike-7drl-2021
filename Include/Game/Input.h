@@ -6,8 +6,9 @@
 // sense that when play the game, escape is the quit out of game option.
 // A pause menu toggle is therefore unnecessary.
 typedef enum Input {
-	INPUT_GAME_WALK_NORTH,
+	INPUT_GAME_FLOOR_PICK_UP,
 	INPUT_GAME_WALK_EAST,
+	INPUT_GAME_WALK_NORTH,
 	INPUT_GAME_WALK_SOUTH,
 	INPUT_GAME_WALK_WEST,
 	INPUT_UI_UP,
