@@ -2,6 +2,7 @@
 
 #include "Game/Door.h"
 #include "Game/Game.h"
+#include "Game/Inventory.h"
 #include "Game/Prompt.h"
 #include "Game/Sprite.h"
 #include "Raylib/raymath.h"
@@ -20,6 +21,7 @@ static struct {
 static struct {
 	Vector2 position;
 	Handle sprite;
+	Handle inventory;
 	int stats[CREATURE_STAT__LENGTH];
 } *creatureData;
 
@@ -47,8 +49,10 @@ void InitCreatures(int capacity)
 		creatureStatus[i].version = 0;
 	}
 
-	for (i = 0; i < creatureCapacity; i++)
+	for (i = 0; i < creatureCapacity; i++) {
 		creatureData[i].sprite = NULL_HANDLE;
+		creatureData[i].inventory = NULL_HANDLE;
+	}
 
 	creatureCount = 0;
 	creatureLowestFree = 0;
@@ -92,10 +96,18 @@ Handle SpawnCreature(void)
 			creatureData[i].position.x = 0;
 			creatureData[i].position.y = 0;
 			creatureData[i].sprite = SpawnSprite();
+			creatureData[i].inventory = SpawnInventory();
 
 			// EXIT: Sprite required
 			if (!IsSpriteValid(creatureData[i].sprite)) {
 				TraceLog(LOG_WARNING, TextFormat("CREATURE: Failed to spawn because there are not enough sprites (%d/%d)", CountSprites(), MaxSprites()));
+				DestroyCreature(handle);
+				return NULL_HANDLE;
+			}
+
+			// EXIT: Inventory required
+			if (!IsInventoryValid(creatureData[i].inventory)) {
+				TraceLog(LOG_WARNING, TextFormat("CREATURE: Failed to spawn because there are not enough inventories (%d/%d)", CountInventories(), MaxInventories()));
 				DestroyCreature(handle);
 				return NULL_HANDLE;
 			}
@@ -337,6 +349,11 @@ Handle GetCreatureAtPosition(Vector2 position)
 
 	MemFree(cache);
 	return found;
+}
+
+inline Handle GetCreatureInventory(Handle creature)
+{
+	return creatureData[creature.index].inventory;
 }
 
 inline Vector2 GetCreaturePosition(Handle creature)

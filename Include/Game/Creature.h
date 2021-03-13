@@ -18,7 +18,7 @@ void InitCreatures(int capacity);
 int MaxCreatures(void);
 
 bool IsCreatureValid(Handle creature);
-Handle SpawnCreature(void); // Requires sprite
+Handle SpawnCreature(void); // Requires a sprite and inventory to be inventory
 void DestroyCreature(Handle creature);
 void DestroyAllCreatures(void);
 void DestroyAllButProtagonistCreatures(void);
@@ -30,6 +30,7 @@ void CreatureOpenDoor(Handle creature, Compass direction);
 void CreatureWalk(Handle creature, Compass direction);
 void CreatureWalkOrInteract(Handle creature, Compass direction);
 Handle GetCreatureAtPosition(Vector2 position);
+Handle GetCreatureInventory(Handle creature); // Managed return. Never null
 Vector2 GetCreaturePosition(Handle creature);
 Handle GetCreatureProtagonist(void);
 Handle GetCreatureSprite(Handle creature); // Managed return. Never null
