@@ -54,72 +54,72 @@ void LoadDefaultInputConfig(void)
 	inputInfo[INPUT_GAME_WALK_EAST].bindInfo.primaryKey = KEY_RIGHT;
 	inputInfo[INPUT_GAME_WALK_EAST].bindInfo.secondaryKey = KEY_D;
 	inputInfo[INPUT_GAME_WALK_EAST].bindInfo.state = INPUT_KEY_STATE_DOWN_PULSE;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdAlt = false;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdControl = false;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdShift = false;
+	inputInfo[INPUT_GAME_WALK_EAST].bindInfo.holdAlt = false;
+	inputInfo[INPUT_GAME_WALK_EAST].bindInfo.holdControl = false;
+	inputInfo[INPUT_GAME_WALK_EAST].bindInfo.holdShift = false;
 
 	inputInfo[INPUT_GAME_WALK_SOUTH].bindInfo.primaryKey = KEY_DOWN;
 	inputInfo[INPUT_GAME_WALK_SOUTH].bindInfo.secondaryKey = KEY_S;
 	inputInfo[INPUT_GAME_WALK_SOUTH].bindInfo.state = INPUT_KEY_STATE_DOWN_PULSE;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdAlt = false;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdControl = false;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdShift = false;
+	inputInfo[INPUT_GAME_WALK_SOUTH].bindInfo.holdAlt = false;
+	inputInfo[INPUT_GAME_WALK_SOUTH].bindInfo.holdControl = false;
+	inputInfo[INPUT_GAME_WALK_SOUTH].bindInfo.holdShift = false;
 
 	inputInfo[INPUT_GAME_WALK_WEST].bindInfo.primaryKey = KEY_LEFT;
 	inputInfo[INPUT_GAME_WALK_WEST].bindInfo.secondaryKey = KEY_A;
 	inputInfo[INPUT_GAME_WALK_WEST].bindInfo.state = INPUT_KEY_STATE_DOWN_PULSE;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdAlt = false;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdControl = false;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdShift = false;
+	inputInfo[INPUT_GAME_WALK_WEST].bindInfo.holdAlt = false;
+	inputInfo[INPUT_GAME_WALK_WEST].bindInfo.holdControl = false;
+	inputInfo[INPUT_GAME_WALK_WEST].bindInfo.holdShift = false;
 
 	inputInfo[INPUT_UI_UP].bindInfo.primaryKey = KEY_UP;
 	inputInfo[INPUT_UI_UP].bindInfo.secondaryKey = KEY_W;
 	inputInfo[INPUT_UI_UP].bindInfo.state = INPUT_KEY_STATE_DOWN_PULSE;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdAlt = false;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdControl = false;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdShift = false;
+	inputInfo[INPUT_UI_UP].bindInfo.holdAlt = false;
+	inputInfo[INPUT_UI_UP].bindInfo.holdControl = false;
+	inputInfo[INPUT_UI_UP].bindInfo.holdShift = false;
 
 	inputInfo[INPUT_UI_RIGHT].bindInfo.primaryKey = KEY_RIGHT;
 	inputInfo[INPUT_UI_RIGHT].bindInfo.secondaryKey = KEY_D;
 	inputInfo[INPUT_UI_RIGHT].bindInfo.state = INPUT_KEY_STATE_DOWN_PULSE;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdAlt = false;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdControl = false;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdShift = false;
+	inputInfo[INPUT_UI_RIGHT].bindInfo.holdAlt = false;
+	inputInfo[INPUT_UI_RIGHT].bindInfo.holdControl = false;
+	inputInfo[INPUT_UI_RIGHT].bindInfo.holdShift = false;
 
 	inputInfo[INPUT_UI_DOWN].bindInfo.primaryKey = KEY_DOWN;
 	inputInfo[INPUT_UI_DOWN].bindInfo.secondaryKey = KEY_S;
 	inputInfo[INPUT_UI_DOWN].bindInfo.state = INPUT_KEY_STATE_DOWN_PULSE;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdAlt = false;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdControl = false;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdShift = false;
+	inputInfo[INPUT_UI_DOWN].bindInfo.holdAlt = false;
+	inputInfo[INPUT_UI_DOWN].bindInfo.holdControl = false;
+	inputInfo[INPUT_UI_DOWN].bindInfo.holdShift = false;
 
 	inputInfo[INPUT_UI_LEFT].bindInfo.primaryKey = KEY_LEFT;
 	inputInfo[INPUT_UI_LEFT].bindInfo.secondaryKey = KEY_A;
 	inputInfo[INPUT_UI_LEFT].bindInfo.state = INPUT_KEY_STATE_DOWN_PULSE;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdAlt = false;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdControl = false;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdShift = false;
+	inputInfo[INPUT_UI_LEFT].bindInfo.holdAlt = false;
+	inputInfo[INPUT_UI_LEFT].bindInfo.holdControl = false;
+	inputInfo[INPUT_UI_LEFT].bindInfo.holdShift = false;
 
 	inputInfo[INPUT_UI_SUBMIT].bindInfo.primaryKey = KEY_ENTER;
 	inputInfo[INPUT_UI_SUBMIT].bindInfo.secondaryKey = KEY_E;
 	inputInfo[INPUT_UI_SUBMIT].bindInfo.state = INPUT_KEY_STATE_PRESSED;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdAlt = false;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdControl = false;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdShift = false;
+	inputInfo[INPUT_UI_SUBMIT].bindInfo.holdAlt = false;
+	inputInfo[INPUT_UI_SUBMIT].bindInfo.holdControl = false;
+	inputInfo[INPUT_UI_SUBMIT].bindInfo.holdShift = false;
 
 	inputInfo[INPUT_UI_CANCEL].bindInfo.primaryKey = KEY_ESCAPE;
 	inputInfo[INPUT_UI_CANCEL].bindInfo.secondaryKey = KEY_TAB;
 	inputInfo[INPUT_UI_CANCEL].bindInfo.state = INPUT_KEY_STATE_PRESSED;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdAlt = false;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdControl = false;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdShift = false;
+	inputInfo[INPUT_UI_CANCEL].bindInfo.holdAlt = false;
+	inputInfo[INPUT_UI_CANCEL].bindInfo.holdControl = false;
+	inputInfo[INPUT_UI_CANCEL].bindInfo.holdShift = false;
 
-	inputInfo[INPUT_UI_TOGGLE_PAUSE_MENU].bindInfo.primaryKey = KEY_ESCAPE;
-	inputInfo[INPUT_UI_TOGGLE_PAUSE_MENU].bindInfo.secondaryKey = 0;
-	inputInfo[INPUT_UI_TOGGLE_PAUSE_MENU].bindInfo.state = INPUT_KEY_STATE_PRESSED;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdAlt = false;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdControl = false;
-	inputInfo[INPUT_GAME_WALK_NORTH].bindInfo.holdShift = false;
+	inputInfo[INPUT_UI_TOGGLE_INVENTORY].bindInfo.primaryKey = KEY_TAB;
+	inputInfo[INPUT_UI_TOGGLE_INVENTORY].bindInfo.secondaryKey = 0;
+	inputInfo[INPUT_UI_TOGGLE_INVENTORY].bindInfo.state = INPUT_KEY_STATE_PRESSED;
+	inputInfo[INPUT_UI_TOGGLE_INVENTORY].bindInfo.holdAlt = false;
+	inputInfo[INPUT_UI_TOGGLE_INVENTORY].bindInfo.holdControl = false;
+	inputInfo[INPUT_UI_TOGGLE_INVENTORY].bindInfo.holdShift = false;
 }
 
 void UpdateInput(void)

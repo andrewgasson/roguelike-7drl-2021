@@ -20,18 +20,18 @@ const View VIEW_GAME_DEFAULT = {
 
 static void OnOpenView(void)
 {
-	//
+	// Do nothing
 }
 
 static void OnCloseView(void)
 {
-	//
+	// Do nothing
 }
 
 static void OnControlView(void)
 {
-	if (IsInputActive(INPUT_UI_TOGGLE_PAUSE_MENU))
-		PushView(&VIEW_GAME_PAUSED);
+	if (IsInputActive(INPUT_UI_TOGGLE_INVENTORY))
+		PushView(&VIEW_GAME_INVENTORY);
 	else if (IsInputActive(INPUT_GAME_WALK_NORTH))
 		CreatureWalkOrInteract(GetCreatureProtagonist(), COMPASS_NORTH);
 	else if (IsInputActive(INPUT_GAME_WALK_EAST))
@@ -40,6 +40,8 @@ static void OnControlView(void)
 		CreatureWalkOrInteract(GetCreatureProtagonist(), COMPASS_SOUTH);
 	else if (IsInputActive(INPUT_GAME_WALK_WEST))
 		CreatureWalkOrInteract(GetCreatureProtagonist(), COMPASS_WEST);
+	else if (IsInputActive(INPUT_UI_CANCEL))
+		PushView(&VIEW_GAME_PAUSED);
 }
 
 static void OnRenderView(void)
