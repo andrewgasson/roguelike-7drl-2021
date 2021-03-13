@@ -29,7 +29,7 @@ The objective of the day was to get as much gameplay in as possible. Unfortunate
 ### Day 7 (2021/03/14)
 Because the challenge was started fairly early in the day, there is no time to make any real improvements, so this day was skipped.
 
-## Lesson
+## Insight
 The real aim of this project was to see how useful, and what problems I would face, using a relation, static memory pool, inline function as namespace, collection-oriented architecture. Surprisingly, I think it scales quite well. It's especially easy, for example, to add behaviours to the creature once modules are set up and their API deicded. The downfall is that modules take some extra thinking since you need to worry about an entire collection's behaviour, rather than just the single instance. Overkill for a 7DRL (at least when starting entirely from scratch), but definitely useful for larger projects.
 
 A lot more progress was made this year than the previous year. I believe that a year focused on finalising common modules means that a much larger Roguelike could come together quickly within the 7 days. GUI utility functions would be especially useful.
