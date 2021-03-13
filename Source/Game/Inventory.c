@@ -117,7 +117,7 @@ int AddInventoryItem(Handle inventory, ItemPrefab itemPrefab, int quantity)
 	totalAdded = 0;
 
 	for (i = 0; i < MAX_INVENTORY_ITEM_QUANTITY; i++) {
-		if (inventoryData[inventory.index].items[i] != ITEM_PREFAB_NONE) {
+		if (inventoryData[inventory.index].items[i] == ITEM_PREFAB_NONE) {
 			inventoryData[inventory.index].items[i] = itemPrefab;
 			totalAdded++;
 
