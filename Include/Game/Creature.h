@@ -24,22 +24,25 @@ void DestroyAllCreatures(void);
 void DestroyAllButProtagonistCreatures(void);
 int CountCreatures(void);
 
-void CreatureAttack(Handle creature, Compass direction);
-void CreatureCloseDoor(Handle creature, Compass direction);
-void CreatureOpenDoor(Handle creature, Compass direction);
-void CreatureWalk(Handle creature, Compass direction);
-void CreatureWalkOrInteract(Handle creature, Compass direction);
 Handle GetCreatureAtPosition(Vector2 position);
 Handle GetCreatureInventory(Handle creature); // Managed return. Never null
 Vector2 GetCreaturePosition(Handle creature);
-Handle GetCreatureProtagonist(void);
 Handle GetCreatureSprite(Handle creature); // Managed return. Never null
 int GetCreatureStat(Handle creature, CreatureStat stat);
-bool IsCreatureProtagonist(Handle creature);
-void KillCreature(Handle creature);
 void SetCreaturePosition(Handle creature, Vector2 position);
-void SetCreatureProtagonist(Handle creature);
 void SetCreatureStat(Handle creature, CreatureStat stat, int value);
+
+Handle GetCreatureProtagonist(void);
+bool IsCreatureProtagonist(Handle creature);
+void SetCreatureProtagonist(Handle creature);
 void UpdateCreatureProtagonistLevel(void);
+
+void CreatureAttack(Handle creature, Compass direction);
+void CreatureCloseDoor(Handle creature, Compass direction);
+void CreatureOpenDoor(Handle creature, Compass direction);
+void CreaturePickUpFloorItem(Handle creature, int inventoryIndex);
+void CreatureWalk(Handle creature, Compass direction);
+void CreatureWalkOrInteract(Handle creature, Compass direction);
+void KillCreature(Handle creature);
 
 #endif // GAME_CREATURE_H

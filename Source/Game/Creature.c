@@ -1,8 +1,10 @@
 #include "Game/Creature.h"
 
+#include "Game/Container.h"
 #include "Game/Door.h"
 #include "Game/Game.h"
 #include "Game/Inventory.h"
+#include "Game/Item.h"
 #include "Game/Prompt.h"
 #include "Game/Sprite.h"
 #include "Raylib/raymath.h"
@@ -192,6 +194,106 @@ inline int CountCreatures(void)
 	return creatureCapacity;
 }
 
+Handle GetCreatureAtPosition(Vector2 position)
+{
+	int i;
+	int length;
+	Handle found;
+	Handle *cache;
+
+	CacheActiveCreatures(&length, &cache);
+
+	if (!cache)
+		return NULL_HANDLE;
+
+	found = NULL_HANDLE;
+
+	for (i = 0; i < length; i++) {
+		if (creatureData[cache[i].index].position.x == position.x
+		&&  creatureData[cache[i].index].position.y == position.y) {
+			found = cache[i];
+			break;
+		}
+	}
+
+	MemFree(cache);
+	return found;
+}
+
+inline Handle GetCreatureInventory(Handle creature)
+{
+	return creatureData[creature.index].inventory;
+}
+
+inline Vector2 GetCreaturePosition(Handle creature)
+{
+	return creatureData[creature.index].position;
+}
+
+inline Handle GetCreatureSprite(Handle creature)
+{
+	return creatureData[creature.index].sprite;
+}
+
+inline int GetCreatureStat(Handle creature, CreatureStat stat)
+{
+	return creatureData[creature.index].stats[stat];
+}
+
+inline void SetCreaturePosition(Handle creature, Vector2 position)
+{
+	creatureData[creature.index].position = position;
+	SetSpritePosition(creatureData[creature.index].sprite, position);
+}
+
+inline void SetCreatureStat(Handle creature, CreatureStat stat, int value)
+{
+	creatureData[creature.index].stats[stat] = value;
+}
+
+inline Handle GetCreatureProtagonist(void)
+{
+	return creatureProtagonist;
+}
+
+inline bool IsCreatureProtagonist(Handle creature)
+{
+	return IsCreatureValid(creatureProtagonist)
+		&& AreHandlesEqual(creature, creatureProtagonist);
+}
+
+inline void SetCreatureProtagonist(Handle creature)
+{
+	if (IsCreatureValid(creatureProtagonist))
+		SetSpriteLayer(creatureData[creatureProtagonist.index].sprite, SPRITE_LAYER_CREATURE);
+
+	creatureProtagonist = creature;
+
+	if (IsCreatureValid(creature))
+		SetSpriteLayer(creatureData[creature.index].sprite, SPRITE_LAYER_PROTAGONIST);
+}
+
+void UpdateCreatureProtagonistLevel(void)
+{
+	Handle protagonist;
+	int currentLevel;
+	int currentExp;
+	int requiredExp;
+
+	protagonist = GetCreatureProtagonist();
+	currentLevel = GetCreatureStat(protagonist, CREATURE_STAT_LEVEL);
+	currentExp = GetCreatureStat(protagonist, CREATURE_STAT_EXPERIENCE);
+	requiredExp = currentLevel + 1; // TODO: Good enough for now, but will scale poorly
+
+	if (currentExp >= requiredExp) {
+		currentExp -= requiredExp;
+		currentLevel++;
+		SetCreatureStat(protagonist, CREATURE_STAT_LEVEL, currentLevel);
+		SetCreatureStat(protagonist, CREATURE_STAT_EXPERIENCE, currentExp);
+		OpenLevelUpPrompt(currentLevel);
+	}
+}
+
 void CreatureAttack(Handle creature, Compass direction)
 {
 	Handle obstacle;
@@ -256,6 +358,35 @@ void CreatureOpenDoor(Handle creature, Compass direction)
 
 			if (IsCreatureProtagonist(creature))
 				TraceLog(LOG_INFO, "CREATURE: Protagonist opened a door");
+		}
+	}
+}
+
+void CreaturePickUpFloorItem(Handle creature, int inventoryIndex)
+{
+	Handle container;
+	Vector2 location;
+
+	location = GetCreaturePosition(creature);
+	container = GetContainerAtPosition(location);
+
+	if (IsContainerValid(container)) {
+		Handle containerInventory;
+		Handle creatureInventory;
+		ItemPrefab itemPrefab;
+
+		creatureInventory = GetCreatureInventory(creature);
+		containerInventory = GetContainerInventory(container);
+		itemPrefab = GetInventoryItemAtIndex(containerInventory, inventoryIndex);
+
+		if (itemPrefab != ITEM_PREFAB_NONE) {
+			if (IsInventoryFull(creatureInventory)) {
+				if (IsCreatureProtagonist(creature))
+					TraceLog(LOG_INFO, "CREATURE: Protagonist's inventory is too full to pick up this item");
+			} else {
+				AddInventoryItem(creatureInventory, itemPrefab, 1);
+				RemoveInventoryItem(containerInventory, itemPrefab, 1);
+			}
 		}
 	}
 }
@@ -325,63 +456,6 @@ void CreatureWalkOrInteract(Handle creature, Compass direction)
 	CreatureWalk(creature, direction);
 }
 
-Handle GetCreatureAtPosition(Vector2 position)
-{
-	int i;
-	int length;
-	Handle found;
-	Handle *cache;
-
-	CacheActiveCreatures(&length, &cache);
-
-	if (!cache)
-		return NULL_HANDLE;
-
-	found = NULL_HANDLE;
-
-	for (i = 0; i < length; i++) {
-		if (creatureData[cache[i].index].position.x == position.x
-		&&  creatureData[cache[i].index].position.y == position.y) {
-			found = cache[i];
-			break;
-		}
-	}
-
-	MemFree(cache);
-	return found;
-}
-
-inline Handle GetCreatureInventory(Handle creature)
-{
-	return creatureData[creature.index].inventory;
-}
-
-inline Vector2 GetCreaturePosition(Handle creature)
-{
-	return creatureData[creature.index].position;
-}
-
-inline Handle GetCreatureProtagonist(void)
-{
-	return creatureProtagonist;
-}
-
-inline Handle GetCreatureSprite(Handle creature)
-{
-	return creatureData[creature.index].sprite;
-}
-
-inline int GetCreatureStat(Handle creature, CreatureStat stat)
-{
-	return creatureData[creature.index].stats[stat];
-}
-
-inline bool IsCreatureProtagonist(Handle creature)
-{
-	return IsCreatureValid(creatureProtagonist)
-		&& AreHandlesEqual(creature, creatureProtagonist);
-}
-
 void KillCreature(Handle creature)
 {
 	if (IsCreatureProtagonist(creature)) {
@@ -390,49 +464,6 @@ void KillCreature(Handle creature)
 	} else {
 		// TODO: Drop carcass/loot
 		DestroyCreature(creature);
-	}
-}
-
-inline void SetCreaturePosition(Handle creature, Vector2 position)
-{
-	creatureData[creature.index].position = position;
-	SetSpritePosition(creatureData[creature.index].sprite, position);
-}
-
-inline void SetCreatureProtagonist(Handle creature)
-{
-	if (IsCreatureValid(creatureProtagonist))
-		SetSpriteLayer(creatureData[creatureProtagonist.index].sprite, SPRITE_LAYER_CREATURE);
-
-	creatureProtagonist = creature;
-
-	if (IsCreatureValid(creature))
-		SetSpriteLayer(creatureData[creature.index].sprite, SPRITE_LAYER_PROTAGONIST);
-}
-
-inline void SetCreatureStat(Handle creature, CreatureStat stat, int value)
-{
-	creatureData[creature.index].stats[stat] = value;
-}
-
-void UpdateCreatureProtagonistLevel(void)
-{
-	Handle protagonist;
-	int currentLevel;
-	int currentExp;
-	int requiredExp;
-
-	protagonist = GetCreatureProtagonist();
-	currentLevel = GetCreatureStat(protagonist, CREATURE_STAT_LEVEL);
-	currentExp = GetCreatureStat(protagonist, CREATURE_STAT_EXPERIENCE);
-	requiredExp = currentLevel + 1; // TODO: Good enough for now, but will scale poorly
-
-	if (currentExp >= requiredExp) {
-		currentExp -= requiredExp;
-		currentLevel++;
-		SetCreatureStat(protagonist, CREATURE_STAT_LEVEL, currentLevel);
-		SetCreatureStat(protagonist, CREATURE_STAT_EXPERIENCE, currentExp);
-		OpenLevelUpPrompt(currentLevel);
 	}
 }
 
